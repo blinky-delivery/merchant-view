@@ -13,7 +13,9 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useMutation } from '@tanstack/react-query';
-import { signupStore } from '@/api/storeService';
+import apiClient from '@/api/apiClient';
+import Spinner from '@/api/icons/spinner';
+import { signupStore, SignupStoreDto } from '@/api/storeService';
 
 export const Route = createLazyFileRoute('/signup')({
   component: Signup,
@@ -37,19 +39,24 @@ function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const createStore = useMutation({
-    mutationFn: (data: any) => signupStore(data)
+    mutationFn: (data: SignupStoreDto) => signupStore(data),
+    onError: (e) => alert(e)
   })
 
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const signupData = {
-      restaurantName,
-      phoneNumber,
-      email,
-      password,
+    e.preventDefault()
+
+    const signupData: SignupStoreDto = {
+      loginEmail: email,
+      loginPassword: password,
+      storeCity: 1,
+      storeTypeId: 1,
+      storeName: restaurantName,
+      storePhoneNumber: phoneNumber
     };
-    console.log(signupData);
+
+    console.log(signupData)
     createStore.mutate(signupData)
   };
 
@@ -71,6 +78,17 @@ function Signup() {
           value={restaurantName}
           onChange={(e) => setRestaurantName(e.target.value)}
           placeholder="Start typing restaurant or shop name"
+          required
+        />
+      </div>
+
+      <div>
+        <Label htmlFor="phoneNumber">Restaurant or shop phone number</Label>
+        <Input
+          id="phoneNumber"
+          value={phoneNumber}
+          onChange={(e) => setPhoneNumber(e.target.value)}
+          placeholder="Type a phone number"
           required
         />
       </div>
@@ -109,7 +127,10 @@ function Signup() {
       </div>
 
       {/* Submit Button */}
-      <Button type="submit" className="w-full mt-4">Next</Button>
+      <Button type="submit" className="w-full mt-4">
+        {!createStore.isPending && <>Next</>}
+        {createStore.isPending && <Spinner />}
+      </Button>
 
       {/* Log in link */}
       <p className="mt-4 text-sm text-center">

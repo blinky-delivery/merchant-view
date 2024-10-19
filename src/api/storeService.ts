@@ -1,6 +1,14 @@
 import apiClient from "./apiClient"
 
-export const signupStore = async (data: any) => {
-    const resp = await apiClient.post("/stores/signup", data)
-    return resp.data
+export type SignupStoreDto = {
+    storeName: string
+    storePhoneNumber: string
+    storeCity: number
+    storeTypeId: number
+    loginEmail: string
+    loginPassword: string
+}
+
+export const signupStore = (data: SignupStoreDto) => {
+    return apiClient.post("/stores/signup", data)
 }
