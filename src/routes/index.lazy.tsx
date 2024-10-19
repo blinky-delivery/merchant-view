@@ -6,7 +6,7 @@ export const Route = createLazyFileRoute('/')({ component: Index })
 function Index() {
     return (
         <div className="w-full h-full flex items-cente justify-items-center place-items-center">
-            <p>Welcome home</p>
+            <p>Welcome home, u gonna make it</p>
             <Button onClick={() => alert("Alhamdulilah")}>Click me here</Button>
         </div>
     )
