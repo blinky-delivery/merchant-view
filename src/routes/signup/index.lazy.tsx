@@ -17,7 +17,7 @@ import apiClient from '@/api/apiClient'
 import Spinner from '@/api/icons/spinner'
 import { signupStore, SignupStoreDto } from '@/api/storeService'
 
-export const Route = createLazyFileRoute('/signup/signup')({
+export const Route = createLazyFileRoute('/signup/')({
   component: Signup,
 })
 
@@ -126,7 +126,6 @@ function Signup() {
           placeholder="Minimum 10 characters"
           required
         />
-
       </div>
 
       {/* Submit Button */}
