@@ -9,7 +9,6 @@ export const Route = createLazyFileRoute('/store/store_details')({
   component: StoreDetails
 })
 
-
 export function StoreDetails() {
 
   const [firstName, setFirstname] = useState('')

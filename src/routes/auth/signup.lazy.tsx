@@ -2,22 +2,15 @@ import { createLazyFileRoute } from '@tanstack/react-router'
 import { LogInIcon } from 'lucide-react'
 
 import React, { useState } from 'react'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useMutation } from '@tanstack/react-query'
-import apiClient from '@/api/apiClient'
 import Spinner from '@/api/icons/spinner'
 import { signupStore, SignupStoreDto } from '@/api/storeService'
 
-export const Route = createLazyFileRoute('/signup/')({
+export const Route = createLazyFileRoute('/auth/signup')({
   component: Signup,
 })
 
