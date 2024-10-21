@@ -1,23 +1,23 @@
 import { createLazyFileRoute } from '@tanstack/react-router'
-import { LogInIcon } from "lucide-react"
+import { LogInIcon } from 'lucide-react'
 
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { useMutation } from '@tanstack/react-query';
-import apiClient from '@/api/apiClient';
-import Spinner from '@/api/icons/spinner';
-import { signupStore, SignupStoreDto } from '@/api/storeService';
+} from '@/components/ui/select'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { useMutation } from '@tanstack/react-query'
+import apiClient from '@/api/apiClient'
+import Spinner from '@/api/icons/spinner'
+import { signupStore, SignupStoreDto } from '@/api/storeService'
 
-export const Route = createLazyFileRoute('/signup')({
+export const Route = createLazyFileRoute('/signup/signup')({
   component: Signup,
 })
 
@@ -25,24 +25,23 @@ const cities = [
   { id: 'ny', name: 'New York' },
   { id: 'sf', name: 'San Francisco' },
   { id: 'la', name: 'Los Angeles' },
-];
+]
 
 const restaurantTypes = [
   { id: 'fastfood', name: 'Fast Food' },
   { id: 'cafe', name: 'Cafe' },
   { id: 'fine_dining', name: 'Fine Dining' },
-];
+]
 
 function Signup() {
-  const [restaurantName, setRestaurantName] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [restaurantName, setRestaurantName] = useState('')
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const createStore = useMutation({
     mutationFn: (data: SignupStoreDto) => signupStore(data),
-    onError: (e) => alert(e)
+    onError: (e) => alert(e),
   })
-
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -53,19 +52,22 @@ function Signup() {
       storeCity: 1,
       storeTypeId: 1,
       storeName: restaurantName,
-      storePhoneNumber: phoneNumber
-    };
+      storePhoneNumber: phoneNumber,
+    }
 
     console.log(signupData)
     createStore.mutate(signupData)
-  };
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 max-w-md mx-auto">
-
       {/* Section 1: Restaurant/Shop Information */}
       <div className="text-center space-y-2">
-        <img src="/blinky_orange.png" alt="login icon" className="mx-auto mb-4 h-40" />
+        <img
+          src="/blinky_orange.png"
+          alt="login icon"
+          className="mx-auto mb-4 h-40"
+        />
         <h2 className="text-xl font-bold">Start selling on Blinky</h2>
         <p>Welcome! Let’s get you set up. It should only take a few minutes.</p>
       </div>
@@ -95,7 +97,7 @@ function Signup() {
 
       {/* Section 2: Login Details */}
       <div className="text-center space-y-2">
-        <LogInIcon className='mx-auto' />
+        <LogInIcon className="mx-auto" />
         <h3 className="text-lg font-bold">Log in details</h3>
         <p>Create your log in details for Blinky Hub</p>
       </div>
@@ -124,6 +126,7 @@ function Signup() {
           placeholder="Minimum 10 characters"
           required
         />
+
       </div>
 
       {/* Submit Button */}
@@ -134,14 +137,21 @@ function Signup() {
 
       {/* Log in link */}
       <p className="mt-4 text-sm text-center">
-        Already have an account? <a href="/login" className="text-primary">Log in</a>
+        Already have an account?{' '}
+        <a href="/login" className="text-primary">
+          Log in
+        </a>
       </p>
 
       {/* Privacy Notice */}
       <p className="mt-4 text-xs text-center">
-        For details on our processing of your personal information, please see our
-        <a href="/privacy-policy" className="text-primary"> Privacy Policy.</a>
+        For details on our processing of your personal information, please see
+        our
+        <a href="/privacy-policy" className="text-primary">
+          {' '}
+          Privacy Policy.
+        </a>
       </p>
     </form>
-  );
-};
+  )
+}

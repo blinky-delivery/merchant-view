@@ -16,20 +16,28 @@ import { Route as rootRoute } from './routes/__root'
 
 // Create Virtual Routes
 
-const SignupLazyImport = createFileRoute('/signup')()
 const IndexLazyImport = createFileRoute('/')()
+const StoreStoredetailsLazyImport = createFileRoute('/store/store_details')()
+const SignupSignupLazyImport = createFileRoute('/signup/signup')()
 
 // Create/Update Routes
-
-const SignupLazyRoute = SignupLazyImport.update({
-  path: '/signup',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/signup.lazy').then((d) => d.Route))
 
 const IndexLazyRoute = IndexLazyImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+
+const StoreStoredetailsLazyRoute = StoreStoredetailsLazyImport.update({
+  path: '/store/store_details',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/store/store_details.lazy').then((d) => d.Route),
+)
+
+const SignupSignupLazyRoute = SignupSignupLazyImport.update({
+  path: '/signup/signup',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/signup/signup.lazy').then((d) => d.Route))
 
 // Populate the FileRoutesByPath interface
 
@@ -42,11 +50,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexLazyImport
       parentRoute: typeof rootRoute
     }
-    '/signup': {
-      id: '/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof SignupLazyImport
+    '/signup/signup': {
+      id: '/signup/signup'
+      path: '/signup/signup'
+      fullPath: '/signup/signup'
+      preLoaderRoute: typeof SignupSignupLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/store/store_details': {
+      id: '/store/store_details'
+      path: '/store/store_details'
+      fullPath: '/store/store_details'
+      preLoaderRoute: typeof StoreStoredetailsLazyImport
       parentRoute: typeof rootRoute
     }
   }
@@ -56,37 +71,42 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
-  '/signup': typeof SignupLazyRoute
+  '/signup/signup': typeof SignupSignupLazyRoute
+  '/store/store_details': typeof StoreStoredetailsLazyRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
-  '/signup': typeof SignupLazyRoute
+  '/signup/signup': typeof SignupSignupLazyRoute
+  '/store/store_details': typeof StoreStoredetailsLazyRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexLazyRoute
-  '/signup': typeof SignupLazyRoute
+  '/signup/signup': typeof SignupSignupLazyRoute
+  '/store/store_details': typeof StoreStoredetailsLazyRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/signup'
+  fullPaths: '/' | '/signup/signup' | '/store/store_details'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/signup'
-  id: '__root__' | '/' | '/signup'
+  to: '/' | '/signup/signup' | '/store/store_details'
+  id: '__root__' | '/' | '/signup/signup' | '/store/store_details'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
-  SignupLazyRoute: typeof SignupLazyRoute
+  SignupSignupLazyRoute: typeof SignupSignupLazyRoute
+  StoreStoredetailsLazyRoute: typeof StoreStoredetailsLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
-  SignupLazyRoute: SignupLazyRoute,
+  SignupSignupLazyRoute: SignupSignupLazyRoute,
+  StoreStoredetailsLazyRoute: StoreStoredetailsLazyRoute,
 }
 
 export const routeTree = rootRoute
@@ -102,14 +122,18 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/signup"
+        "/signup/signup",
+        "/store/store_details"
       ]
     },
     "/": {
       "filePath": "index.lazy.tsx"
     },
-    "/signup": {
-      "filePath": "signup.lazy.tsx"
+    "/signup/signup": {
+      "filePath": "signup/signup.lazy.tsx"
+    },
+    "/store/store_details": {
+      "filePath": "store/store_details.lazy.tsx"
     }
   }
 }
