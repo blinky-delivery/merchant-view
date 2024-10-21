@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useSignIn } from '@clerk/clerk-react'
 import { createLazyFileRoute, Link } from '@tanstack/react-router'
 
 export const Route = createLazyFileRoute('/login/')({
@@ -9,6 +10,24 @@ export const Route = createLazyFileRoute('/login/')({
 })
 
 export function Login() {
+    const { isLoaded, signIn } = useSignIn()
+
+    const handleSubmit = async () => {
+
+        if (signIn && isLoaded) {
+            try {
+                const result = await signIn.create({
+                    strategy: 'password',
+                    password: '1234567890',
+                    identifier: 'test',
+                })
+                console.log("signin successful:", result)
+            } catch (error) {
+                console.log("signin failed:", error)
+            }
+        }
+    }
+
     return (
         <Card className="mx-auto max-w-sm">
             <CardHeader>
