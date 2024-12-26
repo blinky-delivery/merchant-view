@@ -1,13 +1,13 @@
 import axiosInstance, { ApiResponse } from './axiosInstance';
 
-interface User {
+export interface User {
     id: number;
     name: string;
     email: string;
 }
 
 // Signup User
-interface SignupPayload {
+export interface SignupPayload {
     email: string;
     password: string;
     fullName: string;
