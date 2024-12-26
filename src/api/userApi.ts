@@ -6,21 +6,17 @@ interface User {
     email: string;
 }
 
-// Fetch Users
-export const getUsers = async (): Promise<ApiResponse<User[]>> => {
-    const response = await axiosInstance.get<ApiResponse<User[]>>('/users');
-    return response.data;
-};
-
-// Create User
-interface CreateUserPayload {
-    name: string;
+// Signup User
+interface SignupPayload {
     email: string;
+    password: string;
+    fullName: string;
+    phoneNumber: string;
 }
 
-export const createUser = async (
-    userData: CreateUserPayload
+export const signup = async (
+    userData: SignupPayload
 ): Promise<ApiResponse<User>> => {
-    const response = await axiosInstance.post<ApiResponse<User>>('/users', userData);
+    const response = await axiosInstance.post<ApiResponse<User>>('/users/signup', userData);
     return response.data;
 };
