@@ -4,7 +4,7 @@ export const Route = createFileRoute('/_auth')({
   beforeLoad: async ({ context }) => {
     if (context.isSignedIn) {
       throw redirect({
-        to: '/store/store_details',
+        to: '/dashboard/create_store',
       })
     }
   },

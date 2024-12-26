@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Link } from "@tanstack/react-router";
+import { Link, useRouter } from "@tanstack/react-router";
 import { useSignIn } from "@clerk/clerk-react";
 import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
@@ -22,9 +22,8 @@ export function LoginForm({
 
     const [error, setError] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
-
     const { signIn } = useSignIn()
-
+    const router = useRouter()
 
 
     const form = useForm<SigninFormData>({
@@ -36,7 +35,13 @@ export function LoginForm({
             setIsLoading(true)
             setError("");
             try {
-                await signIn?.create({ identifier: value.email, password: value.password })
+                const user = await signIn?.create({ identifier: value.email, password: value.password })
+                if (user) {
+                    router.navigate({
+                        to: '/dashboard/create_store',
+                        reloadDocument: true,
+                    })
+                }
             } catch (e) {
 
             }
@@ -50,6 +55,7 @@ export function LoginForm({
             onSubmit={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
+                void form.handleSubmit();
             }}
             className={cn("flex flex-col gap-6", className)}
             {...props}>
@@ -123,7 +129,6 @@ export function LoginForm({
             <Button
                 type="submit"
                 className="w-full flex items-center justify-center gap-2"
-                disabled={isLoading}
             >
                 {isLoading && <SpinnerIcon />}
                 Login

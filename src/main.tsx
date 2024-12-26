@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
-import { ClerkProvider, useUser } from '@clerk/clerk-react'
+import { ClerkProvider, useSession, useUser } from '@clerk/clerk-react'
 import './index.css'
 
 // Import the generated route tree
@@ -28,7 +28,7 @@ if (!PUBLISHABLE_KEY) {
 
 
 function AuthenticatedRouterProvider() {
-  const { isLoaded, isSignedIn } = useUser()
+  const { isLoaded, isSignedIn } = useSession()
   if (!isLoaded) return null
   return <RouterProvider router={router} context={{ isSignedIn }} />
 }

@@ -1,3 +1,5 @@
+import { addJwtToAxios } from "@/api/axiosInstance";
+import { SignOutButton, useSession, } from "@clerk/clerk-react";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 
@@ -6,10 +8,20 @@ export interface RouterContext {
 }
 
 export const Route = createRootRouteWithContext<RouterContext>()({
-    component: () => (
-        <>
-            <Outlet />
-            <TanStackRouterDevtools />
-        </>
-    )
+    component: () => {
+
+        const { isSignedIn, isLoaded, session } = useSession()
+        if (isSignedIn && isLoaded) {
+            session.getToken().then((token) => {
+                if (token) addJwtToAxios(token)
+            })
+        }
+        return (
+            <>
+                <Outlet />
+                {isSignedIn && <SignOutButton>Signout</SignOutButton>}
+                <TanStackRouterDevtools />
+            </>
+        )
+    }
 })

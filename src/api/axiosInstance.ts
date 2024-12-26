@@ -22,5 +22,10 @@ axiosInstance.interceptors.response.use(
     }
 );
 
+export const addJwtToAxios = (token: string) => {
+    axiosInstance.defaults.headers.common = { 'Authorization': `Bearer ${token}` }
+    console.log("token updated on axios instance to :", token)
+}
+
 export default axiosInstance;
 export type { ApiResponse };

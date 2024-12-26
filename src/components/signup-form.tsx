@@ -7,8 +7,8 @@ import SpinnerIcon from "./ui/spinner";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from '@tanstack/react-form'
 import { useState } from "react";
-import { signup, SignupPayload, User } from "@/api/userApi";
-import { Link } from "@tanstack/react-router";
+import { SignupPayload, User, userApi } from "@/api/userApi";
+import { Link, useRouter } from "@tanstack/react-router";
 import { useSignIn } from "@clerk/clerk-react";
 import { ApiResponse } from "@/api/axiosInstance";
 
@@ -25,6 +25,7 @@ export function SignupForm({
     ...props
 }: React.ComponentPropsWithoutRef<"form">) {
     const { isLoaded, signIn } = useSignIn()
+    const router = useRouter()
 
     if (!isLoaded) {
         // Handle loading state
@@ -33,7 +34,7 @@ export function SignupForm({
     const [error, setError] = useState<string>("");
 
     const mutation = useMutation({
-        mutationFn: signup,
+        mutationFn: userApi.signup,
         onError: (error: any) => {
             if (error.response?.status === 409) {
                 setError("Email already exists");
@@ -43,7 +44,12 @@ export function SignupForm({
         },
         onSuccess: async (data: ApiResponse<User>, variables: SignupPayload, context: unknown) => {
             const user = await signIn.create({ identifier: variables.email, password: variables.password })
-            console.log(user)
+            if (user) {
+                router.navigate({
+                    to: '/dashboard/create_store',
+                    reloadDocument: true,
+                })
+            }
         }
     });
 
