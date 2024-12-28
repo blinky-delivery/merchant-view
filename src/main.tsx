@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
-import { ClerkProvider, useSession, useUser } from '@clerk/clerk-react'
+import { ClerkProvider, useSession } from '@clerk/clerk-react'
 import './index.css'
 
 // Import the generated route tree
