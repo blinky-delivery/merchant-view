@@ -1,4 +1,4 @@
-import { cn } from "@/utils/utils";
+import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -38,7 +38,7 @@ export function LoginForm({
                 const user = await signIn?.create({ identifier: value.email, password: value.password })
                 if (user) {
                     router.navigate({
-                        to: '/dashboard/create_store',
+                        to: '/dashboard/apply',
                         reloadDocument: true,
                     })
                 }

@@ -27,7 +27,6 @@ export const userApi = {
     signup: async (
         userData: SignupPayload
     ): Promise<ApiResponse<User>> => {
-        const response = await axiosInstance.post<ApiResponse<User>>('/users/signup', userData);
-        return response.data;
+        return axiosInstance.post<ApiResponse<User>>('/users/signup', userData).then(response => response.data);
     }
 }

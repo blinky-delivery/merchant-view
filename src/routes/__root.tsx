@@ -12,7 +12,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 
         const { isSignedIn, isLoaded, session } = useSession()
         if (isSignedIn && isLoaded) {
-            session.getToken().then((token) => {
+            session.getToken({ template: 'store-user' }).then((token) => {
                 if (token) addJwtToAxios(token)
             })
         }

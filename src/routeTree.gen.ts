@@ -14,7 +14,7 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as AuthImport } from './routes/_auth'
-import { Route as DashboardCreatestoreImport } from './routes/dashboard/create_store'
+import { Route as DashboardApplyImport } from './routes/dashboard/apply'
 import { Route as AuthSignupImport } from './routes/_auth/signup'
 import { Route as AuthLoginImport } from './routes/_auth/login'
 
@@ -35,9 +35,9 @@ const IndexLazyRoute = IndexLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
 
-const DashboardCreatestoreRoute = DashboardCreatestoreImport.update({
-  id: '/dashboard/create_store',
-  path: '/dashboard/create_store',
+const DashboardApplyRoute = DashboardApplyImport.update({
+  id: '/dashboard/apply',
+  path: '/dashboard/apply',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -85,11 +85,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignupImport
       parentRoute: typeof AuthImport
     }
-    '/dashboard/create_store': {
-      id: '/dashboard/create_store'
-      path: '/dashboard/create_store'
-      fullPath: '/dashboard/create_store'
-      preLoaderRoute: typeof DashboardCreatestoreImport
+    '/dashboard/apply': {
+      id: '/dashboard/apply'
+      path: '/dashboard/apply'
+      fullPath: '/dashboard/apply'
+      preLoaderRoute: typeof DashboardApplyImport
       parentRoute: typeof rootRoute
     }
   }
@@ -114,7 +114,7 @@ export interface FileRoutesByFullPath {
   '': typeof AuthRouteWithChildren
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
-  '/dashboard/create_store': typeof DashboardCreatestoreRoute
+  '/dashboard/apply': typeof DashboardApplyRoute
 }
 
 export interface FileRoutesByTo {
@@ -122,7 +122,7 @@ export interface FileRoutesByTo {
   '': typeof AuthRouteWithChildren
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
-  '/dashboard/create_store': typeof DashboardCreatestoreRoute
+  '/dashboard/apply': typeof DashboardApplyRoute
 }
 
 export interface FileRoutesById {
@@ -131,34 +131,34 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteWithChildren
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/signup': typeof AuthSignupRoute
-  '/dashboard/create_store': typeof DashboardCreatestoreRoute
+  '/dashboard/apply': typeof DashboardApplyRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '' | '/login' | '/signup' | '/dashboard/create_store'
+  fullPaths: '/' | '' | '/login' | '/signup' | '/dashboard/apply'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '' | '/login' | '/signup' | '/dashboard/create_store'
+  to: '/' | '' | '/login' | '/signup' | '/dashboard/apply'
   id:
     | '__root__'
     | '/'
     | '/_auth'
     | '/_auth/login'
     | '/_auth/signup'
-    | '/dashboard/create_store'
+    | '/dashboard/apply'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
   AuthRoute: typeof AuthRouteWithChildren
-  DashboardCreatestoreRoute: typeof DashboardCreatestoreRoute
+  DashboardApplyRoute: typeof DashboardApplyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
   AuthRoute: AuthRouteWithChildren,
-  DashboardCreatestoreRoute: DashboardCreatestoreRoute,
+  DashboardApplyRoute: DashboardApplyRoute,
 }
 
 export const routeTree = rootRoute
@@ -173,7 +173,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/_auth",
-        "/dashboard/create_store"
+        "/dashboard/apply"
       ]
     },
     "/": {
@@ -194,8 +194,8 @@ export const routeTree = rootRoute
       "filePath": "_auth/signup.tsx",
       "parent": "/_auth"
     },
-    "/dashboard/create_store": {
-      "filePath": "dashboard/create_store.tsx"
+    "/dashboard/apply": {
+      "filePath": "dashboard/apply.tsx"
     }
   }
 }
