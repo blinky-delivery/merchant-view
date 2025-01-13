@@ -1,4 +1,3 @@
-import { addJwtToAxios } from "@/api/axiosInstance";
 import { User } from "@/api/userApi";
 import { SignOutButton, useSession, } from "@clerk/clerk-react";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
@@ -11,13 +10,7 @@ export interface RouterContext {
 
 export const Route = createRootRouteWithContext<RouterContext>()({
     component: () => {
-
-        const { isSignedIn, isLoaded, session } = useSession()
-        if (isSignedIn && isLoaded) {
-            session.getToken({ template: 'store-user' }).then((token) => {
-                if (token) addJwtToAxios(token)
-            })
-        }
+        const { isSignedIn } = useSession()
         return (
             <>
                 <Outlet />

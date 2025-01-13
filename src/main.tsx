@@ -18,7 +18,7 @@ declare module '@tanstack/react-router' {
   }
 }
 
-const queryClient = new QueryClient()
+export const queryClient = new QueryClient()
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 

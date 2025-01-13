@@ -10,6 +10,7 @@ interface ApiResponse<T> {
 // Create Axios instance
 const axiosInstance: AxiosInstance = axios.create({
     baseURL: 'http://localhost:3001',
+    withCredentials: true,
     timeout: 5000,
 });
 
@@ -21,11 +22,6 @@ axiosInstance.interceptors.response.use(
         return Promise.reject(error);
     }
 );
-
-export const addJwtToAxios = (token: string) => {
-    axiosInstance.defaults.headers.common = { 'Authorization': `Bearer ${token}` }
-    console.log("token updated on axios instance to :", token)
-}
 
 export default axiosInstance;
 export type { ApiResponse };

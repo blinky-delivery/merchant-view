@@ -1,8 +1,10 @@
-import { useStoreUser } from '@/api/userApi'
+import { userApi, useStoreUser } from '@/api/userApi'
+import { queryClient } from '@/main'
 import { createFileRoute, Outlet, useNavigate } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/dashboard')({
   component: RouteComponent,
+  loader: () => queryClient.ensureQueryData({ queryKey: ['user'], queryFn: userApi.getUser })
 })
 
 function RouteComponent() {
