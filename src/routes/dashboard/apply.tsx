@@ -25,8 +25,8 @@ export function StoreApplication() {
         </div>
 
         {/* Apply Form Section */}
-        <div className="flex flex-1 items-center justify-center">
-          <div className="w-full max-w-xs">
+        <div className="flex  items-center justify-center">
+          <div className="w-full ">
             <ApplyForm />
           </div>
         </div>

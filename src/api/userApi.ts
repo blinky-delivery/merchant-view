@@ -1,4 +1,5 @@
-import axiosInstance, { ApiResponse } from './axiosInstance';
+import axiosInstance, { ApiResponse } from './axiosInstance'
+import { useQuery } from '@tanstack/react-query'
 
 
 export enum UserRole {
@@ -7,26 +8,32 @@ export enum UserRole {
     DELIVERY = 'DELIVERY',
 }
 export interface User {
-    id: number;
-    extAuthId: string;
-    storeId: string | null;
-    email: string;
-    role: UserRole;
+    id: number
+    extAuthId: string
+    storeId: string | null
+    email: string
+    role: UserRole
     createdAt: Date
     updatedAt: Date
 }
 
-// Signup User
 export interface SignupPayload {
-    email: string;
-    password: string;
-    fullName: string;
-    phoneNumber: string;
+    email: string
+    password: string
+    fullName: string
+    phoneNumber: string
 }
 export const userApi = {
     signup: async (
         userData: SignupPayload
     ): Promise<ApiResponse<User>> => {
-        return axiosInstance.post<ApiResponse<User>>('/users/signup', userData).then(response => response.data);
+        return axiosInstance.post<ApiResponse<User>>('/users/signup', userData).then(response => response.data)
+    },
+    getUser: async (): Promise<ApiResponse<User>> => {
+        return axiosInstance.get<ApiResponse<User>>('/users').then(response => response.data)
     }
+}
+
+export const useStoreUser = () => {
+    return useQuery<ApiResponse<User>>({ queryKey: ['user'], queryFn: userApi.getUser })
 }

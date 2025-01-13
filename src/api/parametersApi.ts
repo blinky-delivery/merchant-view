@@ -1,4 +1,4 @@
-import axiosInstance from "./axiosInstance";
+import axiosInstance, { ApiResponse } from "./axiosInstance";
 
 export interface City {
     id: number;
@@ -12,10 +12,10 @@ export interface StoreType {
 
 
 export const parametersApi = {
-    getCities: async (): Promise<City[]> => {
-        return axiosInstance.get<City[]>('parameters/cities').then(response => response.data)
+    getCities: async () => {
+        return axiosInstance.get<ApiResponse<City[]>>('parameters/cities').then(response => response.data)
     },
-    getStoreTypes: async (): Promise<StoreType[]> => {
-        return axiosInstance.get<StoreType[]>('parameters/store-types').then(response => response.data)
+    getStoreTypes: async () => {
+        return axiosInstance.get<ApiResponse<StoreType[]>>('parameters/store-types').then(response => response.data)
     }
 }
