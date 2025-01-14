@@ -12,6 +12,23 @@ export interface ApplyForStorePayload {
     store_image: File
 }
 
+export interface StoreApplication {
+    id: string;
+    user_id: string;
+    store_type_id: number;
+    city_id: number;
+    name: string;
+    contact_phone: string;
+    number_of_sites: number;
+    address: string;
+    id_card_front: string;
+    id_card_back: string;
+    store_image: string;
+    under_review: boolean;
+    approved: boolean;
+}
+
+
 
 export const storeApplicationsApi = {
     applyForStore: async (applicationData: ApplyForStorePayload): Promise<ApiResponse<void>> => {
@@ -35,5 +52,8 @@ export const storeApplicationsApi = {
             }
         }
         ).then(response => response.data);
+    },
+    getUserApplications: async (): Promise<ApiResponse<StoreApplication[]>> => {
+        return axiosInstance.get<ApiResponse<StoreApplication[]>>('/store-applications').then(response => response.data);
     }
 }
