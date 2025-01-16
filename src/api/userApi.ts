@@ -13,6 +13,8 @@ export interface User {
     storeId: string | null
     email: string
     role: UserRole
+    fullName: string;
+    phoneNumber: string;
     createdAt: Date
     updatedAt: Date
 }
@@ -35,5 +37,10 @@ export const userApi = {
 }
 
 export const useStoreUser = () => {
-    return useQuery<ApiResponse<User>>({ queryKey: ['user'], queryFn: userApi.getUser })
+    return useQuery<User>({
+        queryKey: ['user'], queryFn: async () => {
+            const response = await userApi.getUser()
+            return response.data
+        }
+    })
 }

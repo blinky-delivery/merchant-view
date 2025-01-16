@@ -1,14 +1,19 @@
 import { userApi, useStoreUser } from '@/api/userApi'
 import { queryClient } from '@/main'
-import { createFileRoute, Outlet, useMatchRoute, useNavigate, useRouter } from '@tanstack/react-router'
+import { createFileRoute, Outlet, useMatchRoute, useNavigate } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/dashboard')({
   component: RouteComponent,
   beforeLoad: async () => {
     try {
-      const userQuery = await queryClient.fetchQuery({ queryKey: ['user'], queryFn: userApi.getUser })
+      const userQuery = await queryClient.fetchQuery({
+        queryKey: ['user'], queryFn: async () => {
+          const response = await userApi.getUser()
+          return response.data
+        }
+      })
       return {
-        storeId: userQuery.data.storeId
+        storeId: userQuery.storeId
       }
     } catch (error) {
       console.log(error)
@@ -23,8 +28,8 @@ function RouteComponent() {
   const matchRoute = useMatchRoute()
 
   if (data && !isLoading) {
-    console.log(data.message)
-    if (data.data.storeId) {
+    console.log(data)
+    if (data.storeId) {
       if (!matchRoute({ to: '/dashboard/store' })) {
         navigate({ to: '/dashboard/store' })
       }

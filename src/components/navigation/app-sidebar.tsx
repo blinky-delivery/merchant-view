@@ -1,11 +1,8 @@
 import * as React from "react"
 import {
-    AudioWaveform,
     BookOpen,
     Bot,
-    Command,
     Frame,
-    GalleryVerticalEnd,
     Map,
     PieChart,
     Settings2,
@@ -14,7 +11,7 @@ import {
 import { NavMain } from "@/components/navigation/nav-main"
 import { NavProjects } from "@/components/navigation/nav-projects"
 import { NavUser } from "@/components/navigation/nav-user"
-import { TeamSwitcher } from "@/components/navigation/team-switcher"
+import { SiteSwitcher } from "@/components/navigation/SiteSwitcher"
 import {
     Sidebar,
     SidebarContent,
@@ -22,6 +19,8 @@ import {
     SidebarHeader,
     SidebarRail,
 } from "@/components/ui/sidebar"
+import { User, useStoreUser } from "@/api/userApi"
+import { StoreSite, useStoreSites } from "@/api/storeApi"
 // This is sample data.
 const data = {
     user: {
@@ -29,23 +28,6 @@ const data = {
         email: "m@example.com",
         avatar: "/avatars/shadcn.jpg",
     },
-    teams: [
-        {
-            name: "Acme Inc",
-            logo: GalleryVerticalEnd,
-            plan: "Enterprise",
-        },
-        {
-            name: "Acme Corp.",
-            logo: AudioWaveform,
-            plan: "Startup",
-        },
-        {
-            name: "Evil Corp.",
-            logo: Command,
-            plan: "Free",
-        },
-    ],
     navMain: [
         {
             title: "Analytics",
@@ -68,9 +50,9 @@ const data = {
             ],
         },
         {
-            title: "Products",
+            title: "Menus",
             url: "#",
-            icon: Bot,
+            icon: BookOpen,
             items: [
                 {
                     title: "Genesis",
@@ -151,18 +133,35 @@ const data = {
         },
     ],
 }
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+    storeId: string
+    user: User
+    sites: StoreSite[]
+}
+
+export function AppSidebar({ ...props }: AppSidebarProps) {
+    const { data: userData } = useStoreUser()
+
+    if (userData === undefined) return null
     return (
         <Sidebar collapsible="icon" {...props}>
             <SidebarHeader>
-                <TeamSwitcher teams={data.teams} />
+                <div className="flex gap-2 mx-auto py-2 items-center  text-orange-600">
+                    <img src="/blinky_orange.png" className="w-10" />
+                    <p className="font-semibold mt-5 text-3xl">Linky</p>
+                </div>
+                <SiteSwitcher sites={props.sites} />
             </SidebarHeader>
             <SidebarContent>
                 <NavMain items={data.navMain} />
                 <NavProjects projects={data.projects} />
             </SidebarContent>
             <SidebarFooter>
-                <NavUser user={data.user} />
+                <NavUser user={{
+                    email: userData.email,
+                    name: userData.fullName,
+                    avatar: '',
+                }} />
             </SidebarFooter>
             <SidebarRail />
         </Sidebar>

@@ -2,18 +2,40 @@ import { useQuery } from "@tanstack/react-query";
 import axiosInstance, { ApiResponse } from "./axiosInstance";
 
 export interface Store {
-    id: number;
+    id: string;
     name: string;
-    city: string;
-    store_type: string;
-    status: string;
-    createdAt: string;
-    updatedAt: string;
+    createdAt: Date;
+    updatedAt: Date;
+    applicationId: string;
+    storeTypeId: number;
+    ownerId: string;
+    description: string;
+    contactPhone: string;
+    address: string;
+    numberOfSites: number;
+}
+
+export interface StoreSite {
+    id: string;
+    storeId: string;
+    createdAt: Date;
+    updatedAt: Date;
+    address: string;
+    approved: boolean;
+    latitude: number;
+    longitude: number;
+    siteName: string;
+    cityId: number;
+    postalCode: string;
+    phone: string;
 }
 
 export const storeApi = {
     getUserStore: async (storeId: string) => {
         return axiosInstance.get<ApiResponse<Store>>(`/stores/user-store/${storeId}`).then(response => response.data)
+    },
+    getStoreSites: async (storeId: string) => {
+        return axiosInstance.get<ApiResponse<StoreSite[]>>(`/stores/user-store/sites/${storeId}`).then(response => response.data)
     }
 }
 
@@ -23,6 +45,16 @@ export const useMerchantStore = (storeId: string) => {
         queryFn: async () => {
             const response = await storeApi.getUserStore(storeId);
             return response.data;
+        }
+    })
+}
+
+export const useStoreSites = (storeId: string) => {
+    return useQuery<StoreSite[]>({
+        queryKey: ['sites', storeId],
+        queryFn: async () => {
+            const response = await storeApi.getStoreSites(storeId)
+            return response.data
         }
     })
 }

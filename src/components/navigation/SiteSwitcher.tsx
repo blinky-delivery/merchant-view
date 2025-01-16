@@ -1,5 +1,5 @@
 import * as React from "react"
-import { ChevronsUpDown, Plus } from "lucide-react"
+import { ChevronsUpDown, GalleryVerticalEnd, Plus, Store } from "lucide-react"
 
 import {
     DropdownMenu,
@@ -16,18 +16,15 @@ import {
     SidebarMenuItem,
     useSidebar,
 } from "@/components/ui/sidebar"
+import { StoreSite } from "@/api/storeApi"
 
-export function TeamSwitcher({
-    teams,
+export function SiteSwitcher({
+    sites,
 }: {
-    teams: {
-        name: string
-        logo: React.ElementType
-        plan: string
-    }[]
+    sites: StoreSite[]
 }) {
     const { isMobile } = useSidebar()
-    const [activeTeam, setActiveTeam] = React.useState(teams[0])
+    const [activeSite, setActiveSite] = React.useState<StoreSite | null>(sites[0])
 
     return (
         <SidebarMenu>
@@ -39,13 +36,13 @@ export function TeamSwitcher({
                             className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                         >
                             <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                                <activeTeam.logo className="size-4" />
+                                <Store className="size-4" />
                             </div>
                             <div className="grid flex-1 text-left text-sm leading-tight">
                                 <span className="truncate font-semibold">
-                                    {activeTeam.name}
+                                    {activeSite == null ? "Business view" : activeSite.siteName}
                                 </span>
-                                <span className="truncate text-xs">{activeTeam.plan}</span>
+                                {activeSite != null ? <span className="truncate text-xs">{activeSite.address}</span> : null}
                             </div>
                             <ChevronsUpDown className="ml-auto" />
                         </SidebarMenuButton>
@@ -56,20 +53,27 @@ export function TeamSwitcher({
                         side={isMobile ? "bottom" : "right"}
                         sideOffset={4}
                     >
+                        {activeSite != null && (
+                            <DropdownMenuItem className="">
+                                <p className="font-semibold mx-auto text-orange-600">
+                                    Switch to business view
+                                </p>
+
+                            </DropdownMenuItem>
+                        )}
                         <DropdownMenuLabel className="text-xs text-muted-foreground">
-                            Teams
+                            Select a site for store view
                         </DropdownMenuLabel>
-                        {teams.map((team, index) => (
+                        {sites.map((site, index) => (
                             <DropdownMenuItem
-                                key={team.name}
-                                onClick={() => setActiveTeam(team)}
+                                key={site.siteName}
+                                onClick={() => setActiveSite(site)}
                                 className="gap-2 p-2"
                             >
                                 <div className="flex size-6 items-center justify-center rounded-sm border">
-                                    <team.logo className="size-4 shrink-0" />
+                                    <Store className="size-4 shrink-0 " />
                                 </div>
-                                {team.name}
-                                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                                {site.siteName}
                             </DropdownMenuItem>
                         ))}
                         <DropdownMenuSeparator />
@@ -77,7 +81,7 @@ export function TeamSwitcher({
                             <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                                 <Plus className="size-4" />
                             </div>
-                            <div className="font-medium text-muted-foreground">Add team</div>
+                            <div className="font-medium text-muted-foreground">Add a location</div>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
