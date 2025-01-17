@@ -26,14 +26,24 @@ export interface CreateMenuPayload {
     name: string
     description: string
     storeId: string
+    siteId: string
 }
 
 export const menuApi = {
     getMenu: async (menuId: string) => {
-        return axiosInstance.get<ApiResponse<Menu>>(`/menu/${menuId}`).then((response) => response.data)
+        return axiosInstance.get<ApiResponse<Menu>>(`/menu/`, {
+            params: {
+                menu_id: menuId
+            }
+        }).then((response) => response.data)
     },
-    getStoreMenus: async (storeId: string) => {
-        return axiosInstance.get<ApiResponse<Menu[]>>(`/menu/store_menus/${storeId}`).then((response) => response.data)
+    getStoreMenus: async (storeId: string, siteId?: string) => {
+        return axiosInstance.get<ApiResponse<Menu[]>>(`/menu/store_menus/`, {
+            params: {
+                store_id: storeId,
+                site_id: siteId,
+            }
+        }).then((response) => response.data)
     },
     createMenu: async (payload: CreateMenuPayload) => {
         return axiosInstance.post<ApiResponse<Menu>>(`/menu/`, payload).then((response) => response.data)
@@ -41,11 +51,11 @@ export const menuApi = {
 
 }
 
-export const useMenus = (storeId: string) => {
+export const useMenus = (storeId: string, siteId?: string) => {
     return useQuery<Menu[]>({
         queryKey: ['menus', storeId],
         queryFn: async () => {
-            const resp = await menuApi.getStoreMenus(storeId)
+            const resp = await menuApi.getStoreMenus(storeId, siteId)
             return resp.data
         }
     })

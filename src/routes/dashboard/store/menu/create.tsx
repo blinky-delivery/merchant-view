@@ -6,21 +6,18 @@ import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, useNavigate, useRouteContext } from '@tanstack/react-router'
 import { zodResolver } from "@hookform/resolvers/zod"
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { z } from "zod"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { useNavigationStore } from '@/state/store';
 
 export const Route = createFileRoute('/dashboard/store/menu/create')({
   component: RouteComponent,
 })
-
-interface CreateMenuFormData {
-  name: string
-  description: string
-}
 
 
 function RouteComponent() {
@@ -28,7 +25,12 @@ function RouteComponent() {
   const context = useRouteContext({ from: '/dashboard' })
   const storeId = context.storeId as string
   const navigate = useNavigate()
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string>("")
+  const activeSite = useNavigationStore((state) => state.storeSiteId)
+
+  useEffect(() => {
+    if (activeSite === undefined) navigate({ to: '/dashboard/store' })
+  }, [activeSite])
 
   const formSchema = z.object({
     name: z.string().min(2, {
@@ -55,12 +57,14 @@ function RouteComponent() {
 
   })
 
+  if (activeSite === undefined) return null
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     createMenuMutation.mutate({
       description: values.description,
       name: values.name,
       storeId: storeId,
+      siteId: activeSite,
     },
       {
         onSuccess: ({ data }) => {
@@ -103,7 +107,7 @@ function RouteComponent() {
               <FormItem>
                 <FormLabel>Menu Description</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter a menu description" {...field} />
+                  <Textarea placeholder="Enter a menu description" {...field} />
                 </FormControl>
                 <FormDescription>
                   Provide a brief description of the menu

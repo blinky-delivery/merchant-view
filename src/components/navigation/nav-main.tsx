@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/sidebar"
 import { useMenus } from "@/api/menuApi"
 import { Link } from "@tanstack/react-router"
+import { useNavigationStore } from "@/state/store"
 
 interface NavMainPorps {
     storeId: string,
@@ -24,13 +25,14 @@ interface NavMainPorps {
 export function NavMain({
     storeId,
 }: NavMainPorps) {
-    const { data: menus, isLoading: menusLoading } = useMenus(storeId)
+    const activeSite = useNavigationStore((state) => state.storeSiteId)
+    const { data: menus, isLoading: menusLoading } = useMenus(storeId, activeSite)
 
     return (
         <SidebarGroup>
             <SidebarGroupLabel>Platform</SidebarGroupLabel>
             <SidebarMenu>
-                <Collapsible
+                {activeSite && <Collapsible
                     key={'menus'}
                     asChild
                     defaultOpen={false}
@@ -68,8 +70,7 @@ export function NavMain({
                             </SidebarMenuSub>
                         </CollapsibleContent>
                     </SidebarMenuItem>
-                </Collapsible>
-
+                </Collapsible>}
             </SidebarMenu>
         </SidebarGroup>
     )

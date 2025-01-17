@@ -1,5 +1,10 @@
 import { useMenu, } from '@/api/menuApi'
+import EditMenuForm from '@/components/edit-menu-form'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
+import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { createFileRoute } from '@tanstack/react-router'
 import { Eye, Settings } from 'lucide-react'
 
@@ -29,7 +34,7 @@ function RouteComponent() {
         </div>
         <div className='flex space-x-4'>
           <Eye />
-          <Settings />
+          <EditMenuForm menu={menu} />
         </div>
       </div>
       <Separator className='my-4' />
