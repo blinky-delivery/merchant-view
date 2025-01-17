@@ -27,9 +27,9 @@ export interface SignupPayload {
 }
 export const userApi = {
     signup: async (
-        userData: SignupPayload
+        payload: SignupPayload
     ): Promise<ApiResponse<User>> => {
-        return axiosInstance.post<ApiResponse<User>>('/users/signup', userData).then(response => response.data)
+        return axiosInstance.post<ApiResponse<User>>('/users/signup', payload).then(response => response.data)
     },
     getUser: async (): Promise<ApiResponse<User>> => {
         return axiosInstance.get<ApiResponse<User>>('/users').then(response => response.data)

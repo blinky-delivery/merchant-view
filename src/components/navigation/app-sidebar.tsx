@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/sidebar"
 import { User, useStoreUser } from "@/api/userApi"
 import { StoreSite, useStoreSites } from "@/api/storeApi"
+import { useMenus } from "@/api/menuApi"
 // This is sample data.
 const data = {
     user: {
@@ -139,7 +140,7 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
     sites: StoreSite[]
 }
 
-export function AppSidebar({ ...props }: AppSidebarProps) {
+export function AppSidebar({ storeId, ...props }: AppSidebarProps) {
     const { data: userData } = useStoreUser()
 
     if (userData === undefined) return null
@@ -148,12 +149,12 @@ export function AppSidebar({ ...props }: AppSidebarProps) {
             <SidebarHeader>
                 <div className="flex gap-2 mx-auto py-2 items-center  text-orange-600">
                     <img src="/blinky_orange.png" className="w-10" />
-                    <p className="font-semibold mt-5 text-3xl">Linky</p>
+                    {/* <p className="font-semibold mt-5 text-3xl">Linky</p> */}
                 </div>
                 <SiteSwitcher sites={props.sites} />
             </SidebarHeader>
             <SidebarContent>
-                <NavMain items={data.navMain} />
+                <NavMain storeId={storeId} />
                 <NavProjects projects={data.projects} />
             </SidebarContent>
             <SidebarFooter>
