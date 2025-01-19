@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance, { ApiResponse } from "./axiosInstance";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export enum Menutatus {
     DRAFT = 'DRAFT',
@@ -19,6 +18,7 @@ export interface Menu {
     enabled: boolean;
     description: string;
     status: string;
+    coverImage: string | null;
     publishedAt: Date | null;
 }
 
@@ -27,6 +27,12 @@ export interface CreateMenuPayload {
     description: string
     storeId: string
     siteId: string
+}
+
+export interface UpdateMenuPayload {
+    name: string
+    description: string
+    enabled: boolean
 }
 
 export const menuApi = {
@@ -48,6 +54,10 @@ export const menuApi = {
     createMenu: async (payload: CreateMenuPayload) => {
         return axiosInstance.post<ApiResponse<Menu>>(`/menu/`, payload).then((response) => response.data)
     },
+
+    updateMenu: async (params: { id: string, payload: UpdateMenuPayload }) => {
+        return axiosInstance.put<ApiResponse<Menu>>(`menu/${params.id}`, params.payload)
+    }
 
 }
 

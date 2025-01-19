@@ -1,7 +1,7 @@
 import { Menu, menuApi } from "@/api/menuApi";
 import { queryClient } from "@/main";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate, useRouteContext } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -13,12 +13,13 @@ import SpinnerIcon from "./ui/spinner";
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
 import { Settings } from "lucide-react";
 import { Textarea } from "./ui/textarea";
+import { StoreSite } from "@/api/storeApi";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
-export default function EditMenuForm({ menu }: { menu: Menu }) {
-    const context = useRouteContext({ from: '/dashboard' })
-    const storeId = context.storeId as string
+export default function EditMenuForm({ storeId, sites, menu }: { storeId: string, sites: StoreSite[], menu: Menu }) {
     const navigate = useNavigate()
     const [error, setError] = useState<string>("");
+
 
     const formSchema = z.object({
         name: z.string().min(2, {
@@ -27,11 +28,13 @@ export default function EditMenuForm({ menu }: { menu: Menu }) {
         description: z.string().min(2, {
             message: "Username must be at least 2 characters.",
         }),
+        siteId: z.string().uuid(),
     })
 
     const updateMenuMutation = useMutation(
         {
-            mutationFn: menuApi.createMenu,
+
+            mutationFn: menuApi.updateMenu,
             onError: (error: any) => setError(error.message)
         }
     )
@@ -41,6 +44,7 @@ export default function EditMenuForm({ menu }: { menu: Menu }) {
         defaultValues: {
             name: menu.name,
             description: menu.description,
+            siteId: sites[0].id,
         },
 
     })
@@ -48,18 +52,24 @@ export default function EditMenuForm({ menu }: { menu: Menu }) {
 
     const onSubmit = (values: z.infer<typeof formSchema>) => {
         updateMenuMutation.mutate({
-            description: values.description,
-            name: values.name,
-            storeId: storeId,
+            id: menu.id,
+            payload: {
+                name: values.name,
+                description: values.description,
+                enabled: true,
+            }
         },
             {
                 onSuccess: ({ data }) => {
                     queryClient.invalidateQueries({ queryKey: ['menus', storeId] })
-                    navigate({ to: '/dashboard/store/menu/$menuId', params: { menuId: data.id } })
+                    navigate({ to: '/dashboard/store/menu/$menuId', params: { menuId: data.data.id } })
                 }
             }
         )
     }
+
+    if (!sites?.length) return null
+
 
     return (
         <Sheet >
@@ -107,6 +117,34 @@ export default function EditMenuForm({ menu }: { menu: Menu }) {
                                             Provide a brief description of the menu
                                         </FormDescription>
                                         <FormMessage />
+                                    </FormItem>
+                                )}
+                            ></FormField>
+
+                            <FormField
+                                control={form.control}
+                                name='siteId'
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Menu Site</FormLabel>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select a verified email to display" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {sites.map((site) => (
+                                                    <SelectItem key={site.id} value={site.id}>
+                                                        {site.name}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                        <FormDescription>
+                                            The store location for this menu
+                                        </FormDescription>
                                     </FormItem>
                                 )}
                             ></FormField>

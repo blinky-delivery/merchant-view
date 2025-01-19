@@ -1,11 +1,12 @@
 import { useMenu, } from '@/api/menuApi'
+import { useStoreSites } from '@/api/storeApi'
 import EditMenuForm from '@/components/edit-menu-form'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useRouteContext } from '@tanstack/react-router'
 import { Eye, Settings } from 'lucide-react'
 
 export const Route = createFileRoute('/dashboard/store/menu/$menuId')({
@@ -14,14 +15,20 @@ export const Route = createFileRoute('/dashboard/store/menu/$menuId')({
 
 function RouteComponent() {
   const { menuId } = Route.useParams()
+  const context = useRouteContext({ from: '/dashboard' })
+
+  const storeId = context.storeId as string
+
   const { data: menu, isLoading: menuLoading } = useMenu(menuId)
+  const { data: sites, isLoading: sitesLoading } = useStoreSites(storeId)
 
 
-  if (menuLoading) {
+
+  if (menuLoading || sitesLoading) {
     return <p>Loading...</p>
   }
 
-  if (!menu) {
+  if (!menu || !sites) {
     return <p>Menu not found</p>
   }
 
@@ -34,7 +41,7 @@ function RouteComponent() {
         </div>
         <div className='flex space-x-4'>
           <Eye />
-          <EditMenuForm menu={menu} />
+          <EditMenuForm storeId={storeId} sites={sites} menu={menu} />
         </div>
       </div>
       <Separator className='my-4' />

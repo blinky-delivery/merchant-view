@@ -19,6 +19,7 @@ import { Route as DashboardStoreImport } from './routes/dashboard/store'
 import { Route as DashboardApplyImport } from './routes/dashboard/apply'
 import { Route as AuthSignupImport } from './routes/_auth/signup'
 import { Route as AuthLoginImport } from './routes/_auth/login'
+import { Route as DashboardStoreMenuOverviewImport } from './routes/dashboard/store/menu/overview'
 import { Route as DashboardStoreMenuCreateImport } from './routes/dashboard/store/menu/create'
 import { Route as DashboardStoreMenuMenuIdImport } from './routes/dashboard/store/menu/$menuId'
 
@@ -68,6 +69,14 @@ const AuthLoginRoute = AuthLoginImport.update({
   path: '/login',
   getParentRoute: () => AuthRoute,
 } as any)
+
+const DashboardStoreMenuOverviewRoute = DashboardStoreMenuOverviewImport.update(
+  {
+    id: '/menu/overview',
+    path: '/menu/overview',
+    getParentRoute: () => DashboardStoreRoute,
+  } as any,
+)
 
 const DashboardStoreMenuCreateRoute = DashboardStoreMenuCreateImport.update({
   id: '/menu/create',
@@ -148,6 +157,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardStoreMenuCreateImport
       parentRoute: typeof DashboardStoreImport
     }
+    '/dashboard/store/menu/overview': {
+      id: '/dashboard/store/menu/overview'
+      path: '/menu/overview'
+      fullPath: '/dashboard/store/menu/overview'
+      preLoaderRoute: typeof DashboardStoreMenuOverviewImport
+      parentRoute: typeof DashboardStoreImport
+    }
   }
 }
 
@@ -168,11 +184,13 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 interface DashboardStoreRouteChildren {
   DashboardStoreMenuMenuIdRoute: typeof DashboardStoreMenuMenuIdRoute
   DashboardStoreMenuCreateRoute: typeof DashboardStoreMenuCreateRoute
+  DashboardStoreMenuOverviewRoute: typeof DashboardStoreMenuOverviewRoute
 }
 
 const DashboardStoreRouteChildren: DashboardStoreRouteChildren = {
   DashboardStoreMenuMenuIdRoute: DashboardStoreMenuMenuIdRoute,
   DashboardStoreMenuCreateRoute: DashboardStoreMenuCreateRoute,
+  DashboardStoreMenuOverviewRoute: DashboardStoreMenuOverviewRoute,
 }
 
 const DashboardStoreRouteWithChildren = DashboardStoreRoute._addFileChildren(
@@ -203,6 +221,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/store': typeof DashboardStoreRouteWithChildren
   '/dashboard/store/menu/$menuId': typeof DashboardStoreMenuMenuIdRoute
   '/dashboard/store/menu/create': typeof DashboardStoreMenuCreateRoute
+  '/dashboard/store/menu/overview': typeof DashboardStoreMenuOverviewRoute
 }
 
 export interface FileRoutesByTo {
@@ -215,6 +234,7 @@ export interface FileRoutesByTo {
   '/dashboard/store': typeof DashboardStoreRouteWithChildren
   '/dashboard/store/menu/$menuId': typeof DashboardStoreMenuMenuIdRoute
   '/dashboard/store/menu/create': typeof DashboardStoreMenuCreateRoute
+  '/dashboard/store/menu/overview': typeof DashboardStoreMenuOverviewRoute
 }
 
 export interface FileRoutesById {
@@ -228,6 +248,7 @@ export interface FileRoutesById {
   '/dashboard/store': typeof DashboardStoreRouteWithChildren
   '/dashboard/store/menu/$menuId': typeof DashboardStoreMenuMenuIdRoute
   '/dashboard/store/menu/create': typeof DashboardStoreMenuCreateRoute
+  '/dashboard/store/menu/overview': typeof DashboardStoreMenuOverviewRoute
 }
 
 export interface FileRouteTypes {
@@ -242,6 +263,7 @@ export interface FileRouteTypes {
     | '/dashboard/store'
     | '/dashboard/store/menu/$menuId'
     | '/dashboard/store/menu/create'
+    | '/dashboard/store/menu/overview'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -253,6 +275,7 @@ export interface FileRouteTypes {
     | '/dashboard/store'
     | '/dashboard/store/menu/$menuId'
     | '/dashboard/store/menu/create'
+    | '/dashboard/store/menu/overview'
   id:
     | '__root__'
     | '/'
@@ -264,6 +287,7 @@ export interface FileRouteTypes {
     | '/dashboard/store'
     | '/dashboard/store/menu/$menuId'
     | '/dashboard/store/menu/create'
+    | '/dashboard/store/menu/overview'
   fileRoutesById: FileRoutesById
 }
 
@@ -328,7 +352,8 @@ export const routeTree = rootRoute
       "parent": "/dashboard",
       "children": [
         "/dashboard/store/menu/$menuId",
-        "/dashboard/store/menu/create"
+        "/dashboard/store/menu/create",
+        "/dashboard/store/menu/overview"
       ]
     },
     "/dashboard/store/menu/$menuId": {
@@ -337,6 +362,10 @@ export const routeTree = rootRoute
     },
     "/dashboard/store/menu/create": {
       "filePath": "dashboard/store/menu/create.tsx",
+      "parent": "/dashboard/store"
+    },
+    "/dashboard/store/menu/overview": {
+      "filePath": "dashboard/store/menu/overview.tsx",
       "parent": "/dashboard/store"
     }
   }

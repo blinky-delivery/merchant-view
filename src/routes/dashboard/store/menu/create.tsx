@@ -6,14 +6,15 @@ import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, useNavigate, useRouteContext } from '@tanstack/react-router'
 import { zodResolver } from "@hookform/resolvers/zod"
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { z } from "zod"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { useNavigationStore } from '@/state/store';
+import { useStoreSites } from '@/api/storeApi';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export const Route = createFileRoute('/dashboard/store/menu/create')({
   component: RouteComponent,
@@ -24,13 +25,10 @@ function RouteComponent() {
 
   const context = useRouteContext({ from: '/dashboard' })
   const storeId = context.storeId as string
+  const { data: sites, isLoading: sitesLoading } = useStoreSites(storeId)
+
   const navigate = useNavigate()
   const [error, setError] = useState<string>("")
-  const activeSite = useNavigationStore((state) => state.storeSiteId)
-
-  useEffect(() => {
-    if (activeSite === undefined) navigate({ to: '/dashboard/store' })
-  }, [activeSite])
 
   const formSchema = z.object({
     name: z.string().min(2, {
@@ -39,6 +37,8 @@ function RouteComponent() {
     description: z.string().min(2, {
       message: "Username must be at least 2 characters.",
     }),
+    siteId: z.string().uuid(),
+
   })
 
   const createMenuMutation = useMutation(
@@ -53,18 +53,18 @@ function RouteComponent() {
     defaultValues: {
       name: "",
       description: "",
+      siteId: sites ? sites[0].id : "",
     },
 
   })
 
-  if (activeSite === undefined) return null
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     createMenuMutation.mutate({
       description: values.description,
       name: values.name,
       storeId: storeId,
-      siteId: activeSite,
+      siteId: values.siteId,
     },
       {
         onSuccess: ({ data }) => {
@@ -73,6 +73,14 @@ function RouteComponent() {
         }
       }
     )
+  }
+
+  if (sitesLoading) {
+    return <p>Loading...</p>
+  }
+
+  if (!sites) {
+    return <p>Sites not found</p>
   }
 
   return (
@@ -111,6 +119,34 @@ function RouteComponent() {
                 </FormControl>
                 <FormDescription>
                   Provide a brief description of the menu
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          ></FormField>
+
+          <FormField
+            control={form.control}
+            name='siteId'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Menu Site</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a verified email to display" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {sites.map((site) => (
+                      <SelectItem key={site.id} value={site.id}>
+                        {site.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormDescription>
+                  The store location for this menu
                 </FormDescription>
                 <FormMessage />
               </FormItem>

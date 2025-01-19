@@ -27,6 +27,10 @@ export function SiteSwitcher({
     const activeStoreSiteId = useNavigationStore((state) => state.storeSiteId)
     const setActiveStoreSite = useNavigationStore((state) => state.setStoreSite)
     const getActiveStoreSite = () => sites.find((s) => s.id == activeStoreSiteId)
+
+    React.useEffect(() => {
+        if (sites.length) setActiveStoreSite(sites[0].id)
+    }, [])
     return (
         <SidebarMenu>
             <SidebarMenuItem>
@@ -41,7 +45,7 @@ export function SiteSwitcher({
                             </div>
                             <div className="grid flex-1 text-left text-sm leading-tight">
                                 <span className="truncate font-semibold">
-                                    {getActiveStoreSite() == null ? "Business view" : getActiveStoreSite()?.siteName}
+                                    {getActiveStoreSite() == null ? "Business view" : getActiveStoreSite()?.name}
                                 </span>
                                 {getActiveStoreSite() != null ? <span className="truncate text-xs">{getActiveStoreSite()?.address}</span> : null}
                             </div>
@@ -68,14 +72,14 @@ export function SiteSwitcher({
                         {sites.map((site, index) => {
                             return site.id != getActiveStoreSite()?.id &&
                                 <DropdownMenuItem
-                                    key={site.siteName}
+                                    key={site.id}
                                     onClick={() => setActiveStoreSite(site.id)}
                                     className="gap-2 p-2"
                                 >
                                     <div className="flex size-6 items-center justify-center rounded-sm border">
                                         <Store className="size-4 shrink-0 " />
                                     </div>
-                                    {site.siteName}
+                                    {site.name}
                                 </DropdownMenuItem>
                         })}
                         <DropdownMenuSeparator />

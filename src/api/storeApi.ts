@@ -24,7 +24,7 @@ export interface StoreSite {
     approved: boolean;
     latitude: number;
     longitude: number;
-    siteName: string;
+    name: string;
     cityId: number;
     postalCode: string;
     phone: string;
