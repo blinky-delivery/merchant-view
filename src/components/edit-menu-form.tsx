@@ -11,12 +11,25 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import SpinnerIcon from "./ui/spinner";
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
-import { Settings } from "lucide-react";
 import { Textarea } from "./ui/textarea";
 import { StoreSite } from "@/api/storeApi";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
-export default function EditMenuForm({ storeId, sites, menu }: { storeId: string, sites: StoreSite[], menu: Menu }) {
+
+interface EditMenuFormProps {
+    storeId: string
+    sites: StoreSite[]
+    menu: Menu
+}
+
+interface EditMenuFormProps {
+    storeId: string
+    sites: StoreSite[]
+    menu: Menu
+    children: React.ReactNode
+}
+
+export default function EditMenuForm({ storeId, sites, menu, children }: EditMenuFormProps) {
     const navigate = useNavigate()
     const [error, setError] = useState<string>("");
 
@@ -62,7 +75,7 @@ export default function EditMenuForm({ storeId, sites, menu }: { storeId: string
             {
                 onSuccess: ({ data }) => {
                     queryClient.invalidateQueries({ queryKey: ['menus', storeId] })
-                    navigate({ to: '/dashboard/store/menu/$menuId', params: { menuId: data.data.id } })
+                    navigate({ to: '/dashboard/menu/$menuId', params: { menuId: data.data.id } })
                 }
             }
         )
@@ -74,7 +87,7 @@ export default function EditMenuForm({ storeId, sites, menu }: { storeId: string
     return (
         <Sheet >
             <SheetTrigger asChild>
-                <Button variant="outline"><Settings /></Button>
+                {children}
             </SheetTrigger>
             <SheetContent >
                 <SheetHeader>

@@ -32,10 +32,13 @@ export interface StoreSite {
 
 export const storeApi = {
     getUserStore: async (storeId: string) => {
-        return axiosInstance.get<ApiResponse<Store>>(`/stores/user-store/${storeId}`).then(response => response.data)
+        return axiosInstance.get<ApiResponse<Store>>(`/stores/user-store/`, { params: { store_id: storeId } }).then(response => response.data)
     },
     getStoreSites: async (storeId: string) => {
-        return axiosInstance.get<ApiResponse<StoreSite[]>>(`/stores/user-store/sites/${storeId}`).then(response => response.data)
+        return axiosInstance.get<ApiResponse<StoreSite[]>>(`/stores/user-store/sites`, { params: { store_id: storeId } }).then(response => response.data)
+    },
+    getSite: async (siteId: string) => {
+        return axiosInstance.get<ApiResponse<StoreSite>>(`/stores/user-store/sites/${siteId}`).then(response => response.data)
     }
 }
 
@@ -54,6 +57,17 @@ export const useStoreSites = (storeId: string) => {
         queryKey: ['sites', storeId],
         queryFn: async () => {
             const response = await storeApi.getStoreSites(storeId)
+            return response.data
+        }
+    })
+}
+
+
+export const useSite = (siteId: string) => {
+    return useQuery<StoreSite>({
+        queryKey: ['site', siteId],
+        queryFn: async () => {
+            const response = await storeApi.getSite(siteId)
             return response.data
         }
     })

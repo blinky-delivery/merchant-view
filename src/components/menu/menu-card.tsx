@@ -14,12 +14,16 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import CropModal from '../crop-modal';
 import { Button } from '../ui/button';
 import Modal from '../modal';
+import EditMenuForm from '../edit-menu-form';
+import { StoreSite } from '@/api/storeApi';
+import { Link } from '@tanstack/react-router';
 
 type MenuCardProps = {
     menu: Menu;
+    sites: StoreSite[]
 }
 
-const MenuCard: React.FC<MenuCardProps> = ({ menu }) => {
+const MenuCard: React.FC<MenuCardProps> = ({ menu, sites }) => {
 
     const [coverImg, setCoverImg] = useState<string | null>(null);
     const [croppedImg, setCroppedImg] = useState<string | null>(null);
@@ -40,6 +44,10 @@ const MenuCard: React.FC<MenuCardProps> = ({ menu }) => {
             }
         }
 
+    }
+
+    const onSaveHnadler = (imageBlob: Blob) => {
+        const imageURL = URL.createObjectURL(imageBlob)
     }
 
     return (
@@ -76,16 +84,21 @@ const MenuCard: React.FC<MenuCardProps> = ({ menu }) => {
                 </CardHeader>
 
                 <CardFooter>
-                    <p>Status: {menu.status}</p>
+                    {/* <EditMenuForm menu={menu} storeId={menu.storeId} sites={sites}></EditMenuForm> */}
+                    <Link className='w-full' to='/dashboard/menu/$menuId' params={{ menuId: menu.id }}>
+                        <Button className='w-full'>Edit Menu </Button>
+                    </Link>
                 </CardFooter>
             </Card>
 
-            {croppedImg != null && <Modal title='Update menu cover image' isOpen={dialogOpen} onClose={() => setDialogOpen(false)}>
-
-                <CropModal imageSrc={croppedImg} />
-
-
-            </Modal>}
+            {croppedImg != null &&
+                <CropModal
+                    imageSrc={croppedImg}
+                    isOpen={dialogOpen}
+                    onClose={() => setDialogOpen(false)}
+                    onSaveHandler={onSaveHnadler}
+                />
+            }
         </>
     );
 };

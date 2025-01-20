@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import axiosInstance, { ApiResponse } from "./axiosInstance";
 
 export interface City {
@@ -18,4 +19,15 @@ export const parametersApi = {
     getStoreTypes: async () => {
         return axiosInstance.get<ApiResponse<StoreType[]>>('parameters/store-types').then(response => response.data)
     }
+}
+
+
+export const useCities = () => {
+    return useQuery<City[]>({
+        queryKey: ['cities'],
+        queryFn: async () => {
+            const response = await parametersApi.getCities()
+            return response.data
+        }
+    })
 }

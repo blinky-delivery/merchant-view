@@ -1,6 +1,5 @@
 import { CircleX } from "lucide-react";
 import React, { ReactNode } from "react";
-import { Button } from "./ui/button";
 
 interface ModalProps {
     isOpen: boolean;
@@ -32,14 +31,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
                         </button>
                     </div>
                 )}
-                <div className="flex flex-col space-y-4">
-                    {children}
-                    <div className='flex space-x-4'>
-                        <Button className='w-full' variant='secondary' onClick={onClose}>Cancel</Button>
-                        <Button className='w-full'>Save</Button>
-                    </div>
 
-                </div>
+                {children}
 
 
             </div>

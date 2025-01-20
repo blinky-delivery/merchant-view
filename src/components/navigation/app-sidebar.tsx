@@ -9,7 +9,6 @@ import {
     SquareTerminal,
 } from "lucide-react"
 import { NavMain } from "@/components/navigation/nav-main"
-import { NavProjects } from "@/components/navigation/nav-projects"
 import { NavUser } from "@/components/navigation/nav-user"
 import { SiteSwitcher } from "@/components/navigation/SiteSwitcher"
 import {
@@ -155,7 +154,6 @@ export function AppSidebar({ storeId, ...props }: AppSidebarProps) {
             </SidebarHeader>
             <SidebarContent>
                 <NavMain storeId={storeId} />
-                <NavProjects projects={data.projects} />
             </SidebarContent>
             <SidebarFooter>
                 <NavUser user={{

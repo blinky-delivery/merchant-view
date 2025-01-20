@@ -19,9 +19,11 @@ import { Route as DashboardStoreImport } from './routes/dashboard/store'
 import { Route as DashboardApplyImport } from './routes/dashboard/apply'
 import { Route as AuthSignupImport } from './routes/_auth/signup'
 import { Route as AuthLoginImport } from './routes/_auth/login'
-import { Route as DashboardStoreMenuOverviewImport } from './routes/dashboard/store/menu/overview'
-import { Route as DashboardStoreMenuCreateImport } from './routes/dashboard/store/menu/create'
-import { Route as DashboardStoreMenuMenuIdImport } from './routes/dashboard/store/menu/$menuId'
+import { Route as DashboardSettingsStoreImport } from './routes/dashboard/settings/store'
+import { Route as DashboardMenuOverviewImport } from './routes/dashboard/menu/overview'
+import { Route as DashboardMenuCreateImport } from './routes/dashboard/menu/create'
+import { Route as DashboardMenuMenuIdImport } from './routes/dashboard/menu/$menuId'
+import { Route as DashboardSettingsSiteIdImport } from './routes/dashboard/settings/site/$id'
 
 // Create Virtual Routes
 
@@ -70,24 +72,34 @@ const AuthLoginRoute = AuthLoginImport.update({
   getParentRoute: () => AuthRoute,
 } as any)
 
-const DashboardStoreMenuOverviewRoute = DashboardStoreMenuOverviewImport.update(
-  {
-    id: '/menu/overview',
-    path: '/menu/overview',
-    getParentRoute: () => DashboardStoreRoute,
-  } as any,
-)
-
-const DashboardStoreMenuCreateRoute = DashboardStoreMenuCreateImport.update({
-  id: '/menu/create',
-  path: '/menu/create',
-  getParentRoute: () => DashboardStoreRoute,
+const DashboardSettingsStoreRoute = DashboardSettingsStoreImport.update({
+  id: '/settings/store',
+  path: '/settings/store',
+  getParentRoute: () => DashboardRoute,
 } as any)
 
-const DashboardStoreMenuMenuIdRoute = DashboardStoreMenuMenuIdImport.update({
+const DashboardMenuOverviewRoute = DashboardMenuOverviewImport.update({
+  id: '/menu/overview',
+  path: '/menu/overview',
+  getParentRoute: () => DashboardRoute,
+} as any)
+
+const DashboardMenuCreateRoute = DashboardMenuCreateImport.update({
+  id: '/menu/create',
+  path: '/menu/create',
+  getParentRoute: () => DashboardRoute,
+} as any)
+
+const DashboardMenuMenuIdRoute = DashboardMenuMenuIdImport.update({
   id: '/menu/$menuId',
   path: '/menu/$menuId',
-  getParentRoute: () => DashboardStoreRoute,
+  getParentRoute: () => DashboardRoute,
+} as any)
+
+const DashboardSettingsSiteIdRoute = DashboardSettingsSiteIdImport.update({
+  id: '/settings/site/$id',
+  path: '/settings/site/$id',
+  getParentRoute: () => DashboardRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -143,26 +155,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardStoreImport
       parentRoute: typeof DashboardImport
     }
-    '/dashboard/store/menu/$menuId': {
-      id: '/dashboard/store/menu/$menuId'
+    '/dashboard/menu/$menuId': {
+      id: '/dashboard/menu/$menuId'
       path: '/menu/$menuId'
-      fullPath: '/dashboard/store/menu/$menuId'
-      preLoaderRoute: typeof DashboardStoreMenuMenuIdImport
-      parentRoute: typeof DashboardStoreImport
+      fullPath: '/dashboard/menu/$menuId'
+      preLoaderRoute: typeof DashboardMenuMenuIdImport
+      parentRoute: typeof DashboardImport
     }
-    '/dashboard/store/menu/create': {
-      id: '/dashboard/store/menu/create'
+    '/dashboard/menu/create': {
+      id: '/dashboard/menu/create'
       path: '/menu/create'
-      fullPath: '/dashboard/store/menu/create'
-      preLoaderRoute: typeof DashboardStoreMenuCreateImport
-      parentRoute: typeof DashboardStoreImport
+      fullPath: '/dashboard/menu/create'
+      preLoaderRoute: typeof DashboardMenuCreateImport
+      parentRoute: typeof DashboardImport
     }
-    '/dashboard/store/menu/overview': {
-      id: '/dashboard/store/menu/overview'
+    '/dashboard/menu/overview': {
+      id: '/dashboard/menu/overview'
       path: '/menu/overview'
-      fullPath: '/dashboard/store/menu/overview'
-      preLoaderRoute: typeof DashboardStoreMenuOverviewImport
-      parentRoute: typeof DashboardStoreImport
+      fullPath: '/dashboard/menu/overview'
+      preLoaderRoute: typeof DashboardMenuOverviewImport
+      parentRoute: typeof DashboardImport
+    }
+    '/dashboard/settings/store': {
+      id: '/dashboard/settings/store'
+      path: '/settings/store'
+      fullPath: '/dashboard/settings/store'
+      preLoaderRoute: typeof DashboardSettingsStoreImport
+      parentRoute: typeof DashboardImport
+    }
+    '/dashboard/settings/site/$id': {
+      id: '/dashboard/settings/site/$id'
+      path: '/settings/site/$id'
+      fullPath: '/dashboard/settings/site/$id'
+      preLoaderRoute: typeof DashboardSettingsSiteIdImport
+      parentRoute: typeof DashboardImport
     }
   }
 }
@@ -181,30 +207,24 @@ const AuthRouteChildren: AuthRouteChildren = {
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
-interface DashboardStoreRouteChildren {
-  DashboardStoreMenuMenuIdRoute: typeof DashboardStoreMenuMenuIdRoute
-  DashboardStoreMenuCreateRoute: typeof DashboardStoreMenuCreateRoute
-  DashboardStoreMenuOverviewRoute: typeof DashboardStoreMenuOverviewRoute
-}
-
-const DashboardStoreRouteChildren: DashboardStoreRouteChildren = {
-  DashboardStoreMenuMenuIdRoute: DashboardStoreMenuMenuIdRoute,
-  DashboardStoreMenuCreateRoute: DashboardStoreMenuCreateRoute,
-  DashboardStoreMenuOverviewRoute: DashboardStoreMenuOverviewRoute,
-}
-
-const DashboardStoreRouteWithChildren = DashboardStoreRoute._addFileChildren(
-  DashboardStoreRouteChildren,
-)
-
 interface DashboardRouteChildren {
   DashboardApplyRoute: typeof DashboardApplyRoute
-  DashboardStoreRoute: typeof DashboardStoreRouteWithChildren
+  DashboardStoreRoute: typeof DashboardStoreRoute
+  DashboardMenuMenuIdRoute: typeof DashboardMenuMenuIdRoute
+  DashboardMenuCreateRoute: typeof DashboardMenuCreateRoute
+  DashboardMenuOverviewRoute: typeof DashboardMenuOverviewRoute
+  DashboardSettingsStoreRoute: typeof DashboardSettingsStoreRoute
+  DashboardSettingsSiteIdRoute: typeof DashboardSettingsSiteIdRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardApplyRoute: DashboardApplyRoute,
-  DashboardStoreRoute: DashboardStoreRouteWithChildren,
+  DashboardStoreRoute: DashboardStoreRoute,
+  DashboardMenuMenuIdRoute: DashboardMenuMenuIdRoute,
+  DashboardMenuCreateRoute: DashboardMenuCreateRoute,
+  DashboardMenuOverviewRoute: DashboardMenuOverviewRoute,
+  DashboardSettingsStoreRoute: DashboardSettingsStoreRoute,
+  DashboardSettingsSiteIdRoute: DashboardSettingsSiteIdRoute,
 }
 
 const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
@@ -218,10 +238,12 @@ export interface FileRoutesByFullPath {
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
   '/dashboard/apply': typeof DashboardApplyRoute
-  '/dashboard/store': typeof DashboardStoreRouteWithChildren
-  '/dashboard/store/menu/$menuId': typeof DashboardStoreMenuMenuIdRoute
-  '/dashboard/store/menu/create': typeof DashboardStoreMenuCreateRoute
-  '/dashboard/store/menu/overview': typeof DashboardStoreMenuOverviewRoute
+  '/dashboard/store': typeof DashboardStoreRoute
+  '/dashboard/menu/$menuId': typeof DashboardMenuMenuIdRoute
+  '/dashboard/menu/create': typeof DashboardMenuCreateRoute
+  '/dashboard/menu/overview': typeof DashboardMenuOverviewRoute
+  '/dashboard/settings/store': typeof DashboardSettingsStoreRoute
+  '/dashboard/settings/site/$id': typeof DashboardSettingsSiteIdRoute
 }
 
 export interface FileRoutesByTo {
@@ -231,10 +253,12 @@ export interface FileRoutesByTo {
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
   '/dashboard/apply': typeof DashboardApplyRoute
-  '/dashboard/store': typeof DashboardStoreRouteWithChildren
-  '/dashboard/store/menu/$menuId': typeof DashboardStoreMenuMenuIdRoute
-  '/dashboard/store/menu/create': typeof DashboardStoreMenuCreateRoute
-  '/dashboard/store/menu/overview': typeof DashboardStoreMenuOverviewRoute
+  '/dashboard/store': typeof DashboardStoreRoute
+  '/dashboard/menu/$menuId': typeof DashboardMenuMenuIdRoute
+  '/dashboard/menu/create': typeof DashboardMenuCreateRoute
+  '/dashboard/menu/overview': typeof DashboardMenuOverviewRoute
+  '/dashboard/settings/store': typeof DashboardSettingsStoreRoute
+  '/dashboard/settings/site/$id': typeof DashboardSettingsSiteIdRoute
 }
 
 export interface FileRoutesById {
@@ -245,10 +269,12 @@ export interface FileRoutesById {
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/signup': typeof AuthSignupRoute
   '/dashboard/apply': typeof DashboardApplyRoute
-  '/dashboard/store': typeof DashboardStoreRouteWithChildren
-  '/dashboard/store/menu/$menuId': typeof DashboardStoreMenuMenuIdRoute
-  '/dashboard/store/menu/create': typeof DashboardStoreMenuCreateRoute
-  '/dashboard/store/menu/overview': typeof DashboardStoreMenuOverviewRoute
+  '/dashboard/store': typeof DashboardStoreRoute
+  '/dashboard/menu/$menuId': typeof DashboardMenuMenuIdRoute
+  '/dashboard/menu/create': typeof DashboardMenuCreateRoute
+  '/dashboard/menu/overview': typeof DashboardMenuOverviewRoute
+  '/dashboard/settings/store': typeof DashboardSettingsStoreRoute
+  '/dashboard/settings/site/$id': typeof DashboardSettingsSiteIdRoute
 }
 
 export interface FileRouteTypes {
@@ -261,9 +287,11 @@ export interface FileRouteTypes {
     | '/signup'
     | '/dashboard/apply'
     | '/dashboard/store'
-    | '/dashboard/store/menu/$menuId'
-    | '/dashboard/store/menu/create'
-    | '/dashboard/store/menu/overview'
+    | '/dashboard/menu/$menuId'
+    | '/dashboard/menu/create'
+    | '/dashboard/menu/overview'
+    | '/dashboard/settings/store'
+    | '/dashboard/settings/site/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -273,9 +301,11 @@ export interface FileRouteTypes {
     | '/signup'
     | '/dashboard/apply'
     | '/dashboard/store'
-    | '/dashboard/store/menu/$menuId'
-    | '/dashboard/store/menu/create'
-    | '/dashboard/store/menu/overview'
+    | '/dashboard/menu/$menuId'
+    | '/dashboard/menu/create'
+    | '/dashboard/menu/overview'
+    | '/dashboard/settings/store'
+    | '/dashboard/settings/site/$id'
   id:
     | '__root__'
     | '/'
@@ -285,9 +315,11 @@ export interface FileRouteTypes {
     | '/_auth/signup'
     | '/dashboard/apply'
     | '/dashboard/store'
-    | '/dashboard/store/menu/$menuId'
-    | '/dashboard/store/menu/create'
-    | '/dashboard/store/menu/overview'
+    | '/dashboard/menu/$menuId'
+    | '/dashboard/menu/create'
+    | '/dashboard/menu/overview'
+    | '/dashboard/settings/store'
+    | '/dashboard/settings/site/$id'
   fileRoutesById: FileRoutesById
 }
 
@@ -332,7 +364,12 @@ export const routeTree = rootRoute
       "filePath": "dashboard.tsx",
       "children": [
         "/dashboard/apply",
-        "/dashboard/store"
+        "/dashboard/store",
+        "/dashboard/menu/$menuId",
+        "/dashboard/menu/create",
+        "/dashboard/menu/overview",
+        "/dashboard/settings/store",
+        "/dashboard/settings/site/$id"
       ]
     },
     "/_auth/login": {
@@ -349,24 +386,27 @@ export const routeTree = rootRoute
     },
     "/dashboard/store": {
       "filePath": "dashboard/store.tsx",
-      "parent": "/dashboard",
-      "children": [
-        "/dashboard/store/menu/$menuId",
-        "/dashboard/store/menu/create",
-        "/dashboard/store/menu/overview"
-      ]
+      "parent": "/dashboard"
     },
-    "/dashboard/store/menu/$menuId": {
-      "filePath": "dashboard/store/menu/$menuId.tsx",
-      "parent": "/dashboard/store"
+    "/dashboard/menu/$menuId": {
+      "filePath": "dashboard/menu/$menuId.tsx",
+      "parent": "/dashboard"
     },
-    "/dashboard/store/menu/create": {
-      "filePath": "dashboard/store/menu/create.tsx",
-      "parent": "/dashboard/store"
+    "/dashboard/menu/create": {
+      "filePath": "dashboard/menu/create.tsx",
+      "parent": "/dashboard"
     },
-    "/dashboard/store/menu/overview": {
-      "filePath": "dashboard/store/menu/overview.tsx",
-      "parent": "/dashboard/store"
+    "/dashboard/menu/overview": {
+      "filePath": "dashboard/menu/overview.tsx",
+      "parent": "/dashboard"
+    },
+    "/dashboard/settings/store": {
+      "filePath": "dashboard/settings/store.tsx",
+      "parent": "/dashboard"
+    },
+    "/dashboard/settings/site/$id": {
+      "filePath": "dashboard/settings/site/$id.tsx",
+      "parent": "/dashboard"
     }
   }
 }

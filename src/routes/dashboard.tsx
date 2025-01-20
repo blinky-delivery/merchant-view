@@ -1,8 +1,14 @@
+import { useMerchantStore, useStoreSites } from '@/api/storeApi'
 import { userApi, useStoreUser } from '@/api/userApi'
+import { AppSidebar } from '@/components/navigation/app-sidebar'
+import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 import { queryClient } from '@/main'
-import { createFileRoute, Outlet, useChildMatches, useMatchRoute, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, Outlet, useMatches, useMatchRoute, useNavigate, useRouteContext } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/dashboard')({
+  staticData: {
+    title: 'Dashboard'
+  },
   component: RouteComponent,
   beforeLoad: async () => {
     try {
@@ -23,21 +29,61 @@ export const Route = createFileRoute('/dashboard')({
 
 function RouteComponent() {
 
-  const { data, isLoading } = useStoreUser()
   const navigate = useNavigate()
   const matchRoute = useMatchRoute()
-  if (data && !isLoading) {
-    // if (data.storeId) {
-    //   if (!matchRoute({ to: '/dashboard/store', })) {
-    //     navigate({ to: '/dashboard/store' })
-    //   }
-    // } else {
-    //   if (!matchRoute({ to: '/dashboard/apply' })) {
-    //     navigate({ to: '/dashboard/apply' })
-    //   }
-    // }
+  const context = useRouteContext({ from: '/dashboard' })
+  const storeId = context.storeId as string
+
+  const {
+    data: store,
+    error: storeError,
+    isLoading: storeLoading,
+  } = useMerchantStore(storeId)
+  const {
+    data: sites,
+    error: sitesError,
+    isLoading: sitesLoading,
+  } = useStoreSites(storeId)
+  const {
+    data: user,
+    error: userError,
+    isLoading: userLoading,
+  } = useStoreUser()
+
+  const matches = useMatches()
+
+  if (storeLoading || sitesLoading || userLoading) {
+    return <div>Loading...</div>
   }
 
-  return <Outlet />
+  if (storeError || sitesError || userError) {
+    return <div>Error loading data</div>
+  }
+
+  if (!store || !sites || !user) {
+    return <div>Data is not available</div>
+  }
+
+  const getHeaderTitle = () => {
+    return matches.at(-1)?.staticData?.title
+  }
+
+  return (
+    <SidebarProvider>
+      <AppSidebar sites={sites} storeId={storeId} user={user} />
+      <SidebarInset>
+        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+          <div className="flex items-center gap-2 px-4">
+            <SidebarTrigger className="-ml-1" />
+            <h1 className="text-2xl font-semibold">{getHeaderTitle()}</h1>
+          </div>
+        </header>
+        <div className="flex flex-1 flex-col gap-4 p-8 bg-[#f7faf9]">
+          <Outlet />
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
+  )
+
 
 }
