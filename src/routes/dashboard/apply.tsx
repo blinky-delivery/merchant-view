@@ -1,6 +1,6 @@
 
 import { storeApplicationsApi } from '@/api/storeApplicationsApi'
-import { ApplyForm } from '@/components/apply-form'
+import { ApplyForm } from '@/components/forms/apply-form'
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { GalleryVerticalEnd } from 'lucide-react'

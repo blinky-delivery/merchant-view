@@ -1,4 +1,4 @@
-import { SignupForm } from '@/components/signup-form'
+import { SignupForm } from '@/components/forms/signup-form'
 import { createFileRoute } from '@tanstack/react-router'
 import { GalleryVerticalEnd } from 'lucide-react'
 

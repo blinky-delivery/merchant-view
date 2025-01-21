@@ -21,7 +21,6 @@ import { Route as AuthSignupImport } from './routes/_auth/signup'
 import { Route as AuthLoginImport } from './routes/_auth/login'
 import { Route as DashboardSettingsStoreImport } from './routes/dashboard/settings/store'
 import { Route as DashboardMenuOverviewImport } from './routes/dashboard/menu/overview'
-import { Route as DashboardMenuCreateImport } from './routes/dashboard/menu/create'
 import { Route as DashboardMenuMenuIdImport } from './routes/dashboard/menu/$menuId'
 import { Route as DashboardSettingsSiteIdImport } from './routes/dashboard/settings/site/$id'
 
@@ -81,12 +80,6 @@ const DashboardSettingsStoreRoute = DashboardSettingsStoreImport.update({
 const DashboardMenuOverviewRoute = DashboardMenuOverviewImport.update({
   id: '/menu/overview',
   path: '/menu/overview',
-  getParentRoute: () => DashboardRoute,
-} as any)
-
-const DashboardMenuCreateRoute = DashboardMenuCreateImport.update({
-  id: '/menu/create',
-  path: '/menu/create',
   getParentRoute: () => DashboardRoute,
 } as any)
 
@@ -162,13 +155,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardMenuMenuIdImport
       parentRoute: typeof DashboardImport
     }
-    '/dashboard/menu/create': {
-      id: '/dashboard/menu/create'
-      path: '/menu/create'
-      fullPath: '/dashboard/menu/create'
-      preLoaderRoute: typeof DashboardMenuCreateImport
-      parentRoute: typeof DashboardImport
-    }
     '/dashboard/menu/overview': {
       id: '/dashboard/menu/overview'
       path: '/menu/overview'
@@ -211,7 +197,6 @@ interface DashboardRouteChildren {
   DashboardApplyRoute: typeof DashboardApplyRoute
   DashboardStoreRoute: typeof DashboardStoreRoute
   DashboardMenuMenuIdRoute: typeof DashboardMenuMenuIdRoute
-  DashboardMenuCreateRoute: typeof DashboardMenuCreateRoute
   DashboardMenuOverviewRoute: typeof DashboardMenuOverviewRoute
   DashboardSettingsStoreRoute: typeof DashboardSettingsStoreRoute
   DashboardSettingsSiteIdRoute: typeof DashboardSettingsSiteIdRoute
@@ -221,7 +206,6 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardApplyRoute: DashboardApplyRoute,
   DashboardStoreRoute: DashboardStoreRoute,
   DashboardMenuMenuIdRoute: DashboardMenuMenuIdRoute,
-  DashboardMenuCreateRoute: DashboardMenuCreateRoute,
   DashboardMenuOverviewRoute: DashboardMenuOverviewRoute,
   DashboardSettingsStoreRoute: DashboardSettingsStoreRoute,
   DashboardSettingsSiteIdRoute: DashboardSettingsSiteIdRoute,
@@ -240,7 +224,6 @@ export interface FileRoutesByFullPath {
   '/dashboard/apply': typeof DashboardApplyRoute
   '/dashboard/store': typeof DashboardStoreRoute
   '/dashboard/menu/$menuId': typeof DashboardMenuMenuIdRoute
-  '/dashboard/menu/create': typeof DashboardMenuCreateRoute
   '/dashboard/menu/overview': typeof DashboardMenuOverviewRoute
   '/dashboard/settings/store': typeof DashboardSettingsStoreRoute
   '/dashboard/settings/site/$id': typeof DashboardSettingsSiteIdRoute
@@ -255,7 +238,6 @@ export interface FileRoutesByTo {
   '/dashboard/apply': typeof DashboardApplyRoute
   '/dashboard/store': typeof DashboardStoreRoute
   '/dashboard/menu/$menuId': typeof DashboardMenuMenuIdRoute
-  '/dashboard/menu/create': typeof DashboardMenuCreateRoute
   '/dashboard/menu/overview': typeof DashboardMenuOverviewRoute
   '/dashboard/settings/store': typeof DashboardSettingsStoreRoute
   '/dashboard/settings/site/$id': typeof DashboardSettingsSiteIdRoute
@@ -271,7 +253,6 @@ export interface FileRoutesById {
   '/dashboard/apply': typeof DashboardApplyRoute
   '/dashboard/store': typeof DashboardStoreRoute
   '/dashboard/menu/$menuId': typeof DashboardMenuMenuIdRoute
-  '/dashboard/menu/create': typeof DashboardMenuCreateRoute
   '/dashboard/menu/overview': typeof DashboardMenuOverviewRoute
   '/dashboard/settings/store': typeof DashboardSettingsStoreRoute
   '/dashboard/settings/site/$id': typeof DashboardSettingsSiteIdRoute
@@ -288,7 +269,6 @@ export interface FileRouteTypes {
     | '/dashboard/apply'
     | '/dashboard/store'
     | '/dashboard/menu/$menuId'
-    | '/dashboard/menu/create'
     | '/dashboard/menu/overview'
     | '/dashboard/settings/store'
     | '/dashboard/settings/site/$id'
@@ -302,7 +282,6 @@ export interface FileRouteTypes {
     | '/dashboard/apply'
     | '/dashboard/store'
     | '/dashboard/menu/$menuId'
-    | '/dashboard/menu/create'
     | '/dashboard/menu/overview'
     | '/dashboard/settings/store'
     | '/dashboard/settings/site/$id'
@@ -316,7 +295,6 @@ export interface FileRouteTypes {
     | '/dashboard/apply'
     | '/dashboard/store'
     | '/dashboard/menu/$menuId'
-    | '/dashboard/menu/create'
     | '/dashboard/menu/overview'
     | '/dashboard/settings/store'
     | '/dashboard/settings/site/$id'
@@ -366,7 +344,6 @@ export const routeTree = rootRoute
         "/dashboard/apply",
         "/dashboard/store",
         "/dashboard/menu/$menuId",
-        "/dashboard/menu/create",
         "/dashboard/menu/overview",
         "/dashboard/settings/store",
         "/dashboard/settings/site/$id"
@@ -390,10 +367,6 @@ export const routeTree = rootRoute
     },
     "/dashboard/menu/$menuId": {
       "filePath": "dashboard/menu/$menuId.tsx",
-      "parent": "/dashboard"
-    },
-    "/dashboard/menu/create": {
-      "filePath": "dashboard/menu/create.tsx",
       "parent": "/dashboard"
     },
     "/dashboard/menu/overview": {

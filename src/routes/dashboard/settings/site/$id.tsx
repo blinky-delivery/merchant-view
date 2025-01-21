@@ -1,5 +1,5 @@
 import { useSite } from '@/api/storeApi'
-import EditSiteForm from '@/components/edit-site-form'
+import EditSiteForm from '@/components/forms/edit-site-form'
 import { createFileRoute } from '@tanstack/react-router'
 
 
@@ -18,7 +18,6 @@ function RouteComponent() {
     const { data: site, isLoading: siteLoading } = useSite(siteId)
 
     return <div className='flex flex-col space-y-8'>
-
         {site && <EditSiteForm site={site} />}
 
     </div>

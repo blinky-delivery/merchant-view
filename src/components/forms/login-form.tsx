@@ -7,7 +7,7 @@ import { useSignIn } from "@clerk/clerk-react";
 import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import SpinnerIcon from "./ui/spinner";
+import SpinnerIcon from "../ui/spinner";
 
 
 interface SigninFormData {

@@ -1,19 +1,16 @@
 import { createFileRoute, Link, useRouteContext } from '@tanstack/react-router'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
 import { useMenus } from '@/api/menuApi'
 import { Button } from '@/components/ui/button'
 import { PlusIcon } from 'lucide-react'
 import MenuCard from '@/components/menu/menu-card'
 import { useStoreSites } from '@/api/storeApi'
+import CreateMenuForm from '@/components/forms/create-menu-form'
+import SectionHeader from '@/components/navigation/section-header'
 
 export const Route = createFileRoute('/dashboard/menu/overview')({
+  staticData: {
+    title: 'Menu Manager'
+  },
   component: RouteComponent,
 })
 
@@ -29,14 +26,10 @@ function RouteComponent() {
   return (
     <div className="flex flex-col space-y-4">
       <div className="flex justify-between">
-        <h2 className="text-2xl font-bold tracking-tight">Menus</h2>
-        <Link to="/dashboard/menu/create">
-          <Button className="space-x-1">
-            <PlusIcon /> <span>Create menu</span>
-          </Button>
-        </Link>
+        <SectionHeader title='Menus' subtitle='Here you can manage your menus' />
+        <CreateMenuForm sites={sites} storeId={storeId} />
       </div>
-      <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <div className="flex flex-col space-y-8">
         {menus?.map((menu) => (
           <MenuCard key={menu.id} sites={sites} menu={menu} />
         ))}

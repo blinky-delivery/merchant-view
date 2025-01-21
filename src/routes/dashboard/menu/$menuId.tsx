@@ -1,6 +1,6 @@
 import { useMenu } from '@/api/menuApi'
 import { useStoreSites } from '@/api/storeApi'
-import EditMenuForm from '@/components/edit-menu-form'
+import EditMenuForm from '@/components/forms/edit-menu-form'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'

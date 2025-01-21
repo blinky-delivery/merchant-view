@@ -9,9 +9,9 @@ import { Label } from '@radix-ui/react-label'
 import { FieldApi, useForm } from '@tanstack/react-form'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
-import { Popover, PopoverContent, PopoverTrigger } from './ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import { Check, ChevronsUpDown } from 'lucide-react'
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from './ui/command'
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '../ui/command'
 import { ApiResponse } from '@/api/axiosInstance'
 
 interface ApplyForStoreFormData {

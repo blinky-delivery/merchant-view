@@ -3,7 +3,6 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import SpinnerIcon from "./ui/spinner";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from '@tanstack/react-form'
 import { useState } from "react";
@@ -11,6 +10,7 @@ import { SignupPayload, User, userApi } from "@/api/userApi";
 import { Link, useRouter } from "@tanstack/react-router";
 import { useSignIn } from "@clerk/clerk-react";
 import { ApiResponse } from "@/api/axiosInstance";
+import SpinnerIcon from "../ui/spinner";
 
 interface SignupFormData {
     fullName: string;
