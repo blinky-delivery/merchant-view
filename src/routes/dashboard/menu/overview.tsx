@@ -1,7 +1,5 @@
 import { createFileRoute, Link, useRouteContext } from '@tanstack/react-router'
 import { useMenus } from '@/api/menuApi'
-import { Button } from '@/components/ui/button'
-import { PlusIcon } from 'lucide-react'
 import MenuCard from '@/components/menu/menu-card'
 import { useStoreSites } from '@/api/storeApi'
 import CreateMenuForm from '@/components/forms/create-menu-form'
@@ -31,7 +29,7 @@ function RouteComponent() {
       </div>
       <div className="flex flex-col space-y-8">
         {menus?.map((menu) => (
-          <MenuCard key={menu.id} sites={sites} menu={menu} />
+          <MenuCard key={menu.id} sites={sites} menu={menu} storeId={storeId} />
         ))}
       </div>
     </div>

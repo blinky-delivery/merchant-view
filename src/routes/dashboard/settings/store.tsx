@@ -1,4 +1,5 @@
 import { useStoreSites } from '@/api/storeApi'
+import EditButton from '@/components/edit-button'
 import SectionHeader from '@/components/navigation/section-header'
 import StoreMockup from '@/components/store-mockup'
 import { Button } from '@/components/ui/button'
@@ -41,12 +42,7 @@ function RouteComponent() {
                 <div className="flex justify-between items-start">
                   <h2 className="text-2xl font-bold">{site.name}</h2>
                   <Link to='/dashboard/settings/site/$id' params={{ id: site.id }}>
-                    <Button
-                      className="p-2 rounded-full w-10 h-10 shadow-md"
-                      aria-label="Edit store information"
-                    >
-                      <Edit2 className="w-5 h-5 " />
-                    </Button>
+                    <EditButton />
                   </Link>
                 </div>
               </CardTitle>

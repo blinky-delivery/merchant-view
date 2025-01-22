@@ -17,9 +17,18 @@ export interface Menu {
     updatedAt: Date;
     enabled: boolean;
     description: string;
+    sort: number
     status: string;
     coverImage: string | null;
     publishedAt: Date | null;
+}
+
+export interface MenuCategory {
+    id: string
+    name: string
+    description: string
+    sort: number
+    enabled: boolean
 }
 
 export interface CreateMenuPayload {
@@ -34,6 +43,18 @@ export interface UpdateMenuPayload {
     description: string
     enabled: boolean
 }
+
+export interface CreateMenuCategoryPayload {
+    menuId: string
+    name: string
+    description: string | null
+}
+
+export interface ResortMenuCategoriesPayload {
+    menuId: string
+    newOrder: string[]
+}
+
 
 export const menuApi = {
     getMenu: async (menuId: string) => {
@@ -57,6 +78,24 @@ export const menuApi = {
 
     updateMenu: async (params: { id: string, payload: UpdateMenuPayload }) => {
         return axiosInstance.put<ApiResponse<Menu>>(`menu/${params.id}`, params.payload)
+    },
+
+    getMenuCategories: async (menuId: string) => {
+        return axiosInstance.get<ApiResponse<MenuCategory[]>>("menu/categories",
+            {
+                params: {
+                    menu_id: menuId
+                }
+            }
+        ).then((resp) => resp.data)
+    },
+
+    createMenuCategory: async (payload: CreateMenuCategoryPayload) => {
+        return axiosInstance.post<ApiResponse<MenuCategory>>('menu/categories', payload).then((resp) => resp.data)
+    },
+
+    resortMenuCategories: async (payload: ResortMenuCategoriesPayload) => {
+        return axiosInstance.put<ApiResponse<string[]>>('menu/categories/sort', payload).then((resp) => resp.data)
     }
 
 }
@@ -77,6 +116,16 @@ export const useMenu = (menuId: string) => {
         queryKey: ['menu', menuId],
         queryFn: async () => {
             const resp = await menuApi.getMenu(menuId)
+            return resp.data
+        }
+    })
+}
+
+export const useMenuCategories = (menuId: string) => {
+    return useQuery<MenuCategory[]>({
+        queryKey: ['menu_categories', menuId],
+        queryFn: async () => {
+            const resp = await menuApi.getMenuCategories(menuId)
             return resp.data
         }
     })

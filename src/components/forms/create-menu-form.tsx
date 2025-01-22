@@ -33,6 +33,7 @@ import {
 } from '@/components/ui/select'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { PlusIcon } from "lucide-react"
+
 interface CreateMneuFormProps {
     sites: StoreSite[]
     storeId: string
@@ -41,6 +42,8 @@ interface CreateMneuFormProps {
 export default function CreateMenuForm({ sites, storeId }: CreateMneuFormProps) {
     const navigate = useNavigate()
     const [error, setError] = useState<string>('')
+
+    const [sheetOpen, setSheetOpen] = useState(false)
 
     const formSchema = z.object({
         name: z.string().min(2, {
@@ -77,17 +80,14 @@ export default function CreateMenuForm({ sites, storeId }: CreateMneuFormProps) 
             {
                 onSuccess: ({ data }) => {
                     queryClient.invalidateQueries({ queryKey: ['menus', storeId] })
-                    navigate({
-                        to: '/dashboard/menu/$menuId',
-                        params: { menuId: data.id },
-                    })
+                    setSheetOpen(false)
                 },
             },
         )
     }
 
     return (
-        <Sheet>
+        <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
             <SheetTrigger asChild>
                 <Button className="space-x-1">
                     <PlusIcon /> <span>Create menu</span>

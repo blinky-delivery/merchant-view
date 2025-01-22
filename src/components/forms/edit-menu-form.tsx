@@ -31,7 +31,8 @@ interface EditMenuFormProps {
 
 export default function EditMenuForm({ storeId, sites, menu, children }: EditMenuFormProps) {
     const navigate = useNavigate()
-    const [error, setError] = useState<string>("");
+    const [error, setError] = useState<string>("")
+    const [sheetOpen, setSheetOpen] = useState(false)
 
 
     const formSchema = z.object({
@@ -75,7 +76,7 @@ export default function EditMenuForm({ storeId, sites, menu, children }: EditMen
             {
                 onSuccess: ({ data }) => {
                     queryClient.invalidateQueries({ queryKey: ['menus', storeId] })
-                    navigate({ to: '/dashboard/menu/$menuId', params: { menuId: data.data.id } })
+                    setSheetOpen(false)
                 }
             }
         )
@@ -85,7 +86,7 @@ export default function EditMenuForm({ storeId, sites, menu, children }: EditMen
 
 
     return (
-        <Sheet >
+        <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
             <SheetTrigger asChild>
                 {children}
             </SheetTrigger>
