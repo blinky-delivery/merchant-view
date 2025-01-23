@@ -7,12 +7,10 @@ interface SortMenuCategoriesFormProps {
 }
 
 import React, { useState } from "react"
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog"
 import { Sortable, SortableDragHandle, SortableItem } from "../ui/sortable"
 import { GripVertical } from "lucide-react"
-import { Button } from "../ui/button"
 import { useMutation } from "@tanstack/react-query"
-import SpinnerIcon from "../ui/spinner"
 import { queryClient } from "@/main"
 import FormSubmitButtons from "./form-submit-buttons"
 

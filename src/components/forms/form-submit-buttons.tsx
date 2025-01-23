@@ -7,7 +7,8 @@ const FormSubmitButtons: React.FC<{
     showCancel: boolean;
     onCancel: () => void;
     onSubmit?: () => void,
-}> = ({ isLoading, isDisabled, showCancel, onCancel, onSubmit }) => {
+    submitTitle?: string
+}> = ({ isLoading, isDisabled, showCancel, onCancel, onSubmit, submitTitle }) => {
     return (
         <div className="flex items-end justify-end gap-2">
 
@@ -26,7 +27,7 @@ const FormSubmitButtons: React.FC<{
                 onClick={onSubmit}
             >
                 {isLoading && <SpinnerIcon />}
-                Save changes
+                {submitTitle !== undefined ? submitTitle : 'Save changes'}
             </Button>
         </div>
     );

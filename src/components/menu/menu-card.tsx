@@ -105,8 +105,8 @@ const MenuCard: React.FC<MenuCardProps> = ({ menu, sites, storeId }: MenuCardPro
                                     ))}
                                 </div>
                                 <CreateMenuCategoryForm menuId={menu.id} storeId={storeId}>
-                                    <Button className='mt-4 items-center' variant={'outline'}>
-                                        Add category
+                                    <Button className='mt-4 items-center text-muted-foreground font-semibold space-x-1' variant={'outline'}>
+                                        <Plus size={20} />   <span>Add Category</span>
                                     </Button>
                                 </CreateMenuCategoryForm>
                             </div>
