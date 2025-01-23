@@ -185,7 +185,6 @@ export default function CreateMenuForm({ sites, storeId }: CreateMneuFormProps) 
                     </Form>
                 </div>
             </SheetContent>
-
         </Sheet>
     )
 }

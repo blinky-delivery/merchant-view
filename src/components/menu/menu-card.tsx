@@ -11,6 +11,7 @@ import EditButton from '../edit-button';
 import CreateMenuCategoryForm from '../forms/create-menu-category';
 import MenuCategoryCard from './menu-category-card';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import SortMenuCategoriesForm from '../forms/sort-menu-categories';
 
 type MenuCardProps = {
     menu: Menu
@@ -62,10 +63,12 @@ const MenuCard: React.FC<MenuCardProps> = ({ menu, sites, storeId }: MenuCardPro
                                                         <span>Edit Details</span>
                                                     </DropdownMenuItem>
                                                 </EditMenuForm>
-                                                <DropdownMenuItem>
-                                                    <ArrowUpDown />
-                                                    <span>Rearrange Categories</span>
-                                                </DropdownMenuItem>
+                                                <SortMenuCategoriesForm menuId={menu.id} categories={menuCategories ?? []}>
+                                                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                                        <ArrowUpDown />
+                                                        <span>Rearrange Categories</span>
+                                                    </DropdownMenuItem>
+                                                </SortMenuCategoriesForm>
                                                 <DropdownMenuItem>
                                                     <Plus />
                                                     <span>Add a Category</span>

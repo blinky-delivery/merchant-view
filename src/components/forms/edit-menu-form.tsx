@@ -16,11 +16,6 @@ import { StoreSite } from "@/api/storeApi";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 
-interface EditMenuFormProps {
-    storeId: string
-    sites: StoreSite[]
-    menu: Menu
-}
 
 interface EditMenuFormProps {
     storeId: string
