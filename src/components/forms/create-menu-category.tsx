@@ -12,6 +12,7 @@ import { Input } from "../ui/input"
 import { Button } from "../ui/button"
 import SpinnerIcon from "../ui/spinner"
 import { Textarea } from "../ui/textarea"
+import FormSubmitButtons from "./form-submit-buttons"
 
 interface CreateMenuCategoryFormProps {
     storeId: string
@@ -119,18 +120,12 @@ const CreateMenuCategoryForm = ({ menuId, storeId, children }: CreateMenuCategor
                                     </FormItem>
                                 )}
                             ></FormField>
-                            <div className="flex space-x-2">
-                                <Button variant={"outline"} onClick={() => setSheetOpen(false)}>Cancel</Button>
-                                <Button
-                                    type="submit"
-                                    className="w-full flex items-center justify-center gap-2"
-                                    disabled={mutation.isPending}
-                                >
-                                    {mutation.isPending && <SpinnerIcon />}
-                                    Save Changes
-                                </Button>
-
-                            </div>
+                            <FormSubmitButtons
+                                isDisabled={mutation.isPending}
+                                isLoading={mutation.isPending}
+                                showCancel={true}
+                                onCancel={() => setSheetOpen(false)}
+                            />
                         </form>
                     </Form>
                 </div>

@@ -1,7 +1,6 @@
 import { StoreSite } from "@/api/storeApi"
 import { menuApi } from '@/api/menuApi'
 import { Input } from '@/components/ui/input'
-import SpinnerIcon from '@/components/ui/spinner'
 import { queryClient } from '@/main'
 import { useMutation } from '@tanstack/react-query'
 import {
@@ -33,6 +32,7 @@ import {
 } from '@/components/ui/select'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { PlusIcon } from "lucide-react"
+import FormSubmitButtons from "./form-submit-buttons"
 
 interface CreateMneuFormProps {
     sites: StoreSite[]
@@ -90,7 +90,7 @@ export default function CreateMenuForm({ sites, storeId }: CreateMneuFormProps) 
         <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
             <SheetTrigger asChild>
                 <Button className="space-x-1">
-                    <PlusIcon /> <span>Create menu</span>
+                    <PlusIcon /> <span>New Menu</span>
                 </Button>
             </SheetTrigger>
             <SheetContent>
@@ -173,14 +173,12 @@ export default function CreateMenuForm({ sites, storeId }: CreateMneuFormProps) 
                                 )}
                             ></FormField>
 
-                            <Button
-                                type="submit"
-                                className="w-full flex items-center justify-center gap-2"
-                                disabled={createMenuMutation.isPending}
-                            >
-                                {createMenuMutation.isPending && <SpinnerIcon />}
-                                Create Menu
-                            </Button>
+                            <FormSubmitButtons
+                                isDisabled={createMenuMutation.isPending}
+                                isLoading={createMenuMutation.isPending}
+                                showCancel={true}
+                                onCancel={() => setSheetOpen(false)}
+                            />
                         </form>
                     </Form>
                 </div>

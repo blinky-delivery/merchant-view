@@ -14,6 +14,7 @@ import { Button } from "../ui/button"
 import { useMutation } from "@tanstack/react-query"
 import SpinnerIcon from "../ui/spinner"
 import { queryClient } from "@/main"
+import FormSubmitButtons from "./form-submit-buttons"
 
 
 const SortMenuCategoriesForm: React.FC<SortMenuCategoriesFormProps> = ({ menuId, categories, children }) => {
@@ -78,17 +79,14 @@ const SortMenuCategoriesForm: React.FC<SortMenuCategoriesFormProps> = ({ menuId,
                     ))}
                 </Sortable>
                 <DialogFooter>
-                    <DialogClose asChild>
-                        <Button variant='outline'>Cancel</Button>
-                    </DialogClose>
-                    <Button
-                        onClick={onSubmit}
-                        className="w-full flex items-center justify-center gap-2"
-                        disabled={resortMutation.isPending}
-                    >
-                        {resortMutation.isPending && <SpinnerIcon />}
-                        Save changes
-                    </Button>
+
+                    <FormSubmitButtons
+                        isDisabled={resortMutation.isPending}
+                        isLoading={resortMutation.isPending}
+                        showCancel={true}
+                        onCancel={() => setDialogOpen(false)}
+                        onSubmit={onSubmit}
+                    />
 
                 </DialogFooter>
             </DialogContent>

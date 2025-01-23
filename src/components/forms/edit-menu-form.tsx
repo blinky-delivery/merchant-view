@@ -14,6 +14,7 @@ import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHe
 import { Textarea } from "../ui/textarea";
 import { StoreSite } from "@/api/storeApi";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import FormSubmitButtons from "./form-submit-buttons";
 
 
 
@@ -21,13 +22,13 @@ interface EditMenuFormProps {
     storeId: string
     sites: StoreSite[]
     menu: Menu
-    children: React.ReactNode
+    open: boolean
+    onOpenChanged: (value: boolean) => void,
 }
 
-export default function EditMenuForm({ storeId, sites, menu, children }: EditMenuFormProps) {
+export default function EditMenuForm({ storeId, sites, menu, open, onOpenChanged }: EditMenuFormProps) {
     const navigate = useNavigate()
     const [error, setError] = useState<string>("")
-    const [sheetOpen, setSheetOpen] = useState(false)
 
 
     const formSchema = z.object({
@@ -71,7 +72,7 @@ export default function EditMenuForm({ storeId, sites, menu, children }: EditMen
             {
                 onSuccess: ({ data }) => {
                     queryClient.invalidateQueries({ queryKey: ['menus', storeId] })
-                    setSheetOpen(false)
+                    onOpenChanged(false)
                 }
             }
         )
@@ -81,10 +82,7 @@ export default function EditMenuForm({ storeId, sites, menu, children }: EditMen
 
 
     return (
-        <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-            <SheetTrigger asChild>
-                {children}
-            </SheetTrigger>
+        <Sheet open={open} onOpenChange={onOpenChanged}>
             <SheetContent >
                 <SheetHeader>
                     <SheetTitle>Edit Menu</SheetTitle>
@@ -158,14 +156,13 @@ export default function EditMenuForm({ storeId, sites, menu, children }: EditMen
                                 )}
                             ></FormField>
 
-                            <Button
-                                type="submit"
-                                className="w-full flex items-center justify-center gap-2"
-                                disabled={updateMenuMutation.isPending}
-                            >
-                                {updateMenuMutation.isPending && <SpinnerIcon />}
-                                Save changes
-                            </Button>
+                            <FormSubmitButtons
+                                isDisabled={updateMenuMutation.isPending}
+                                isLoading={updateMenuMutation.isPending}
+                                showCancel={true}
+                                onCancel={() => onOpenChanged(false)}
+                            />
+
                         </form>
 
                     </Form>
