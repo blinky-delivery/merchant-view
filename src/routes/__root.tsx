@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/toaster";
 import { SignOutButton, useSession, } from "@clerk/clerk-react";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
@@ -12,6 +13,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         const { isSignedIn } = useSession()
         return (
             <>
+                <Toaster />
                 <Outlet />
                 {isSignedIn && <SignOutButton>Signout</SignOutButton>}
                 <TanStackRouterDevtools />

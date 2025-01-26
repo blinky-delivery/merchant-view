@@ -12,7 +12,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useProductsByCategory } from '@/api/productApi';
-import CreateProductForm from '../forms/product-form';
+import CreateProductForm from '../forms/create-product-form';
 
 
 interface MenuCategoryCardProps {

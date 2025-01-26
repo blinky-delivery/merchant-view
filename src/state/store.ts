@@ -9,3 +9,5 @@ export const useNavigationStore = create<NavigationState>((set) => ({
     storeSiteId: undefined,
     setStoreSite: (storeSiteId: string) => set({ storeSiteId })
 }))
+
+

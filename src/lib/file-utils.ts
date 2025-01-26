@@ -1,3 +1,8 @@
+export interface ImageDimensions {
+    width: number;
+    height: number;
+}
+
 const readFileAsDataURL = async (file: File | Blob): Promise<string | null> => {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -13,10 +18,6 @@ const readFileAsDataURL = async (file: File | Blob): Promise<string | null> => {
     });
 };
 
-export interface ImageDimensions {
-    width: number;
-    height: number;
-}
 
 const getImageDimensions = async (file: File | Blob): Promise<ImageDimensions | null> => {
     return new Promise((resolve, reject) => {

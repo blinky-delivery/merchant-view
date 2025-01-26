@@ -11,6 +11,7 @@ import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHe
 import { Textarea } from "../ui/textarea";
 import FormSubmitButtons from "./form-submit-buttons";
 import { productApi } from "@/api/productApi";
+import { useImageSelectorDialogState } from "@/state/image-selector.store";
 
 
 
@@ -21,6 +22,9 @@ interface CreateProductFormProps {
 }
 
 export default function CreateProductForm({ menuCategory, open, onOpenChanged }: CreateProductFormProps) {
+
+    const { openProductImageSelecetor } = useImageSelectorDialogState()
+
     const [error, setError] = useState<string>("")
 
 
@@ -58,9 +62,10 @@ export default function CreateProductForm({ menuCategory, open, onOpenChanged }:
 
         },
             {
-                onSuccess: ({ data }) => {
+                onSuccess: ({ data: createdProduct }) => {
                     queryClient.invalidateQueries({ queryKey: ['products', menuCategory.id] })
                     onOpenChanged(false)
+                    openProductImageSelecetor(createdProduct.id, () => { })
                 }
             }
         )
