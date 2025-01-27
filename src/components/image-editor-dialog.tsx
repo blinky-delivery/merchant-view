@@ -6,11 +6,20 @@ import { createImage, getCroppedImage } from '@/lib/image-utils';
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog';
 import { useImageEditorDialogState } from '@/state/image-editor.store';
 import { Separator } from './ui/separator';
+import { useMutation } from '@tanstack/react-query';
+import { imageApi, ImageType } from '@/api/imageApi';
+import FormSubmitButtons from './forms/form-submit-buttons';
 
-const ImageEditorDialog = () => {
+interface ImageEditorDialogProps {
+    storeId: string
+    storeSiteId: string | null
+}
+
+const ImageEditorDialog = ({ storeId, storeSiteId }: ImageEditorDialogProps) => {
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area>({ width: 0, height: 0, x: 0, y: 0 });
+    const [error, setError] = useState<string>("")
 
     const { isOpen, imageToEdit, productId, imageType, onImageUploaded, closeDialog } = useImageEditorDialogState()
 
@@ -40,11 +49,21 @@ const ImageEditorDialog = () => {
     const saveCroppedImage = async () => {
         if (imageToEdit) {
             try {
-                const image = await createImage(imageToEdit)
+                const image = await createImage(imageToEdit.src)
                 if (image) {
                     const croppedImageBlob = await getCroppedImage(image, croppedAreaPixels)
                     if (croppedImageBlob) {
                         console.log('blob saved', croppedImageBlob)
+                        if (productId && imageType) {
+                            uploadMuation.mutate({
+                                productId: productId,
+                                storeId: storeId,
+                                storeSiteId: storeSiteId,
+                                imageBlob: croppedImageBlob,
+                                imageFileName: imageToEdit.fileName,
+                                type: imageType,
+                            })
+                        }
 
                     }
                 }
@@ -55,6 +74,13 @@ const ImageEditorDialog = () => {
         }
 
     }
+
+    const uploadMuation = useMutation({
+        mutationFn: imageApi.uploadImage,
+        onError: (error) => setError(error.message)
+    })
+
+
 
     if (!imageToEdit) return null
 
@@ -68,7 +94,7 @@ const ImageEditorDialog = () => {
                     <DialogTitle><h2 className='text-2xl'>Edit Photo</h2> </DialogTitle>
                     <div className='h-[50vh] md:w-[700px] relative mx-auto'>
                         <Cropper
-                            image={imageToEdit}
+                            image={imageToEdit.src}
                             crop={crop}
                             zoom={zoom}
                             aspect={1 / 1}
@@ -95,14 +121,14 @@ const ImageEditorDialog = () => {
                     </div>
 
                     <Separator />
-                    <div className='flex justify-between'>
-                        <Button variant='outline'>
-                            View Photo Guidelines
-                        </Button>
-                        <Button onClick={saveCroppedImage}>
-                            Save Changes
-                        </Button>
-                    </div>
+                    <FormSubmitButtons
+                        isDisabled={uploadMuation.isPending}
+                        isLoading={uploadMuation.isPending}
+                        onSubmit={saveCroppedImage}
+                        onCancel={onCloseHandler}
+                        showCancel={true}
+
+                    />
 
 
                 </div>

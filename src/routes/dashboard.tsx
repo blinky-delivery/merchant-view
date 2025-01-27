@@ -5,6 +5,7 @@ import { AppSidebar } from '@/components/navigation/app-sidebar'
 import SelectImageDialog from '@/components/select-image-dialog'
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 import { queryClient } from '@/main'
+import { useNavigationStore } from '@/state/store'
 import { createFileRoute, Outlet, useMatches, useMatchRoute, useNavigate, useRouteContext } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/dashboard')({
@@ -53,6 +54,7 @@ function RouteComponent() {
   } = useStoreUser()
 
   const matches = useMatches()
+  const activeStoreSiteId = useNavigationStore((state) => state.storeSiteId)
 
   if (storeLoading || sitesLoading || userLoading) {
     return <div>Loading...</div>
@@ -87,7 +89,7 @@ function RouteComponent() {
         </SidebarInset>
       </SidebarProvider>
       <SelectImageDialog />
-      <ImageEditorDialog />
+      <ImageEditorDialog storeId={storeId} storeSiteId={activeStoreSiteId ?? null} />
     </>
   )
 

@@ -37,7 +37,8 @@ export interface GetImagesParams {
 export interface UploadImageFormData {
     storeId: string
     type: ImageType
-    file: File
+    imageBlob: Blob,
+    imageFileName: string
     storeSiteId: string | null
     productId: string | null
 
@@ -53,17 +54,17 @@ export const imageApi = {
             }
         }).then((resp) => resp.data)
     },
-    uploadImage: async ({ storeId, storeSiteId, type, file, productId }: UploadImageFormData) => {
+    uploadImage: async ({ storeId, storeSiteId, type, imageBlob, imageFileName, productId }: UploadImageFormData) => {
         const formData = new FormData();
         formData.append('storeId', storeId)
         formData.append('type', type)
-        formData.append('file', file, file.name)
+        formData.append('file', imageBlob, imageFileName)
         if (storeSiteId)
             formData.append('storeSiteId', storeSiteId)
         if (productId)
             formData.append('productId', productId)
 
-        return axiosInstance.post<ApiResponse<TImage>>('/image', formData, {
+        return axiosInstance.post<ApiResponse<TImage>>('/image/upload', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }

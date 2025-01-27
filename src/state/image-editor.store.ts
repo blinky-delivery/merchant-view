@@ -2,15 +2,20 @@
 import { ImageType } from '@/api/imageApi'
 import { create } from 'zustand'
 
+export interface EditableImage {
+    src: string
+    fileName: string
+}
+
 export interface ImageEditorStore {
     isOpen: boolean
-    imageToEdit: string | null,
+    imageToEdit: EditableImage | null,
     imageType: ImageType | null,
     productId: string | null
     onImageUploaded: ((imageId: string) => void) | null,
     openImageEditor: (
         productId: string | null,
-        imageToEdit: string,
+        imageToEdit: EditableImage,
         imageType: ImageType | null,
         onImageUploaded: (imageId: string) => void,
     ) => void,
@@ -26,7 +31,7 @@ export const useImageEditorDialogState = create<ImageEditorStore>((set) => ({
     onImageUploaded: null,
     openImageEditor: (
         productId: string | null,
-        imageToEdit: string,
+        imageToEdit: EditableImage,
         imageType: ImageType | null,
         onImageUploaded: (imageId: string) => void,
     ) => {

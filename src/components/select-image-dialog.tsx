@@ -31,7 +31,12 @@ const SelectImageDialog: React.FC = () => {
 
             if (imageToEditAsURL && dimensions) {
                 closeDialog()
-                openImageEditor(productId, imageToEditAsURL, imageType, dimensions.height, () => { })
+                openImageEditor(productId, {
+                    src: imageToEditAsURL,
+                    fileName: imageFile.name,
+                }, imageType,
+                    () => { }
+                )
             }
 
         }
