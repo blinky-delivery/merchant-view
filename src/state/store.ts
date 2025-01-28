@@ -1,13 +1,14 @@
+import { StoreSite } from '@/api/storeApi'
 import { create } from 'zustand'
 
 export interface NavigationState {
-    storeSiteId?: string
-    setStoreSite: (id: string) => void
+    storeSite?: StoreSite
+    setStoreSite: (site: StoreSite) => void
 }
 
 export const useNavigationStore = create<NavigationState>((set) => ({
-    storeSiteId: undefined,
-    setStoreSite: (storeSiteId: string) => set({ storeSiteId })
+    storeSite: undefined,
+    setStoreSite: (site: StoreSite) => set({ storeSite: site })
 }))
 
 

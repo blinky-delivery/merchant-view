@@ -23,10 +23,10 @@ function RouteComponent() {
 
   return (
     <div className="flex flex-col space-y-4">
-      <div className="flex justify-between">
+      {/* <div className="flex justify-between">
         <SectionHeader title='Menus' subtitle='Here you can manage your menus' />
         <CreateMenuForm sites={sites} storeId={storeId} />
-      </div>
+      </div> */}
       <div className="flex flex-col space-y-8">
         {menus?.map((menu) => (
           <MenuCard key={menu.id} sites={sites} menu={menu} storeId={storeId} />

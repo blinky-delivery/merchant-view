@@ -24,12 +24,12 @@ export function SiteSwitcher({
     sites: StoreSite[]
 }) {
     const { isMobile } = useSidebar()
-    const activeStoreSiteId = useNavigationStore((state) => state.storeSiteId)
+    const activeSite = useNavigationStore((state) => state.storeSite)
     const setActiveStoreSite = useNavigationStore((state) => state.setStoreSite)
-    const getActiveStoreSite = () => sites.find((s) => s.id == activeStoreSiteId)
+    const getActiveStoreSite = () => sites.find((s) => s.id == activeSite?.id)
 
     React.useEffect(() => {
-        if (sites.length) setActiveStoreSite(sites[0].id)
+        if (sites.length) setActiveStoreSite(sites[0])
     }, [])
     return (
         <SidebarMenu>
@@ -58,14 +58,14 @@ export function SiteSwitcher({
                         side={isMobile ? "bottom" : "right"}
                         sideOffset={4}
                     >
-                        {getActiveStoreSite() != null && (
+                        {/* {getActiveStoreSite() != null && (
                             <DropdownMenuItem className="">
                                 <p className="font-semibold mx-auto text-orange-600">
                                     Switch to business view
                                 </p>
 
                             </DropdownMenuItem>
-                        )}
+                        )} */}
                         <DropdownMenuLabel className="text-xs text-muted-foreground">
                             Select a site for store view
                         </DropdownMenuLabel>
@@ -73,7 +73,7 @@ export function SiteSwitcher({
                             return site.id != getActiveStoreSite()?.id &&
                                 <DropdownMenuItem
                                     key={site.id}
-                                    onClick={() => setActiveStoreSite(site.id)}
+                                    onClick={() => setActiveStoreSite(site)}
                                     className="gap-2 p-2"
                                 >
                                     <div className="flex size-6 items-center justify-center rounded-sm border">

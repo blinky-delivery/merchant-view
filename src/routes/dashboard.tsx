@@ -54,7 +54,7 @@ function RouteComponent() {
   } = useStoreUser()
 
   const matches = useMatches()
-  const activeStoreSiteId = useNavigationStore((state) => state.storeSiteId)
+  const activeStoreSiteId = useNavigationStore((state) => state.storeSite)
 
   if (storeLoading || sitesLoading || userLoading) {
     return <div>Loading...</div>
