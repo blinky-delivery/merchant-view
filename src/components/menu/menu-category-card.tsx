@@ -29,7 +29,7 @@ const MenuCategoryCard: React.FC<MenuCategoryCardProps> = ({ category, menuId, s
     const [productFormOpen, setProductFormOpen] = useState(false)
 
     return (
-        <div id={category.id}>
+        <>
             <CreateProductForm open={productFormOpen} onOpenChanged={setProductFormOpen} menuCategory={category} />
             <div className='flex flex-col space-y-4'>
                 <div className='flex justify-between'>
@@ -88,7 +88,7 @@ const MenuCategoryCard: React.FC<MenuCategoryCardProps> = ({ category, menuId, s
                     </DropdownMenu>
 
                 </div>
-                {products?.map((product) => <ProductItem product={product} menuCategory={category} />)}
+                {products?.map((product) => <ProductItem key={product.id} product={product} menuCategory={category} />)}
                 <div>
                     <Button className='mt-4 items-center text-muted-foreground font-semibold space-x-1' variant={'outline'} onClick={() => setProductFormOpen(true)}>
                         <Plus size={20} />   <span>Add Item</span>
@@ -98,7 +98,7 @@ const MenuCategoryCard: React.FC<MenuCategoryCardProps> = ({ category, menuId, s
                     <Separator />
                 </div>
             </div>
-        </div>
+        </>
     )
 }
 

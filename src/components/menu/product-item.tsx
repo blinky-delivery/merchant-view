@@ -1,10 +1,8 @@
 import { Product } from '@/api/productApi';
-import { getImageSrcFromFileId } from '@/lib/file-utils';
 import React from 'react';
 import { Separator } from '../ui/separator';
 import { Check, Clock9, Edit2, Ellipsis, Trash } from 'lucide-react';
 import { Button } from '../ui/button';
-import { ImageStatus } from '@/api/imageApi';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { useEditProductForm } from '@/state/edit-product-form-store';
 import { MenuCategory } from '@/api/menuApi';

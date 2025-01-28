@@ -2,8 +2,6 @@ import { createFileRoute, useRouteContext } from '@tanstack/react-router'
 import { useMenus } from '@/api/menuApi'
 import MenuCard from '@/components/menu/menu-card'
 import { useStoreSites } from '@/api/storeApi'
-import CreateMenuForm from '@/components/forms/create-menu-form'
-import SectionHeader from '@/components/navigation/section-header'
 
 export const Route = createFileRoute('/dashboard/menu/overview')({
   staticData: {
@@ -29,7 +27,7 @@ function RouteComponent() {
       </div> */}
       <div className="flex flex-col space-y-8">
         {menus?.map((menu) => (
-          <MenuCard sites={sites} menu={menu} storeId={storeId} />
+          <MenuCard key={menu.id} sites={sites} menu={menu} storeId={storeId} />
         ))}
       </div>
     </div>
