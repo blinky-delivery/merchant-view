@@ -29,7 +29,7 @@ function RouteComponent() {
       </div> */}
       <div className="flex flex-col space-y-8">
         {menus?.map((menu) => (
-          <MenuCard key={menu.id} sites={sites} menu={menu} storeId={storeId} />
+          <MenuCard sites={sites} menu={menu} storeId={storeId} />
         ))}
       </div>
     </div>

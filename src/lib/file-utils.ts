@@ -1,7 +1,13 @@
+const DirectusUrl = import.meta.env.VITE_DIRECTUS_URL
+
+export const getImageSrcFromFileId = (fileId: string) => `${DirectusUrl}/assets/${fileId}`
+
 export interface ImageDimensions {
     width: number;
     height: number;
 }
+
+
 
 const readFileAsDataURL = async (file: File | Blob): Promise<string | null> => {
     return new Promise((resolve, reject) => {

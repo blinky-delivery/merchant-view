@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useProductsByCategory } from '@/api/productApi';
 import CreateProductForm from '../forms/create-product-form';
+import ProductItem from './product-item';
+import SortProductsForm from '../forms/sort-products';
 
 
 interface MenuCategoryCardProps {
@@ -27,7 +29,7 @@ const MenuCategoryCard: React.FC<MenuCategoryCardProps> = ({ category, menuId, s
     const [productFormOpen, setProductFormOpen] = useState(false)
 
     return (
-        <>
+        <div id={category.id}>
             <CreateProductForm open={productFormOpen} onOpenChanged={setProductFormOpen} menuCategory={category} />
             <div className='flex flex-col space-y-4'>
                 <div className='flex justify-between'>
@@ -65,10 +67,13 @@ const MenuCategoryCard: React.FC<MenuCategoryCardProps> = ({ category, menuId, s
                                     <Edit2 />
                                     <span>Edit Details</span>
                                 </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                    <ArrowUpDown />
-                                    <span>Rearrange Items</span>
-                                </DropdownMenuItem>
+                                <SortProductsForm menuCategoryId={category.id} products={products ?? []}>
+                                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                        <ArrowUpDown />
+                                        <span>Rearrange Items</span>
+                                    </DropdownMenuItem>
+                                </SortProductsForm>
+
                                 <DropdownMenuItem>
                                     <Plus />
                                     <span>Add an Item</span>
@@ -83,6 +88,7 @@ const MenuCategoryCard: React.FC<MenuCategoryCardProps> = ({ category, menuId, s
                     </DropdownMenu>
 
                 </div>
+                {products?.map((product) => <ProductItem product={product} menuCategory={category} />)}
                 <div>
                     <Button className='mt-4 items-center text-muted-foreground font-semibold space-x-1' variant={'outline'} onClick={() => setProductFormOpen(true)}>
                         <Plus size={20} />   <span>Add Item</span>
@@ -92,7 +98,7 @@ const MenuCategoryCard: React.FC<MenuCategoryCardProps> = ({ category, menuId, s
                     <Separator />
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 

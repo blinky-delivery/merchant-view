@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance, { ApiResponse } from "./axiosInstance";
+import { TImage } from "./imageApi";
 
 export interface Product {
     id: string;
@@ -9,8 +10,11 @@ export interface Product {
     updatedAt: Date;
     enabled: boolean;
     description: string | null;
+    primaryImage: TImage | null;
     menuCategoryId: string;
     price: number;
+    sort: number
+    taxRate: number | null
     imageId: string | null;
 }
 
@@ -20,6 +24,20 @@ interface CreateProductPayload {
     description: string | null
     price: number
     taxRate: number | null
+}
+
+interface UpdateProductPayload {
+    menuCategoryId: string
+    name: string
+    description: string | null,
+    price: number
+    taxRate: number | null
+    primaryImageId: string | null
+}
+
+export interface ResortProductsPayload {
+    menuCategoryId: string
+    newOrder: string[]
 }
 
 export const productApi = {
@@ -32,6 +50,12 @@ export const productApi = {
     },
     createProduct: async (payload: CreateProductPayload) => {
         return axiosInstance.post<ApiResponse<Product>>('/product', payload).then((resp) => resp.data)
+    },
+    resrtProducts: async (payload: ResortProductsPayload) => {
+        return axiosInstance.put<ApiResponse<string[]>>('product/sort', payload).then((resp) => resp.data)
+    },
+    updateProduct: async (payload: UpdateProductPayload) => {
+        return axiosInstance.put<ApiResponse<Product>>('product/update', payload).then((resp) => resp.data)
     }
 }
 

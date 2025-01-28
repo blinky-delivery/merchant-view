@@ -8,7 +8,12 @@ interface EditButtonProps {
 const EditButton: React.FC<EditButtonProps> = ({ onClick }) => (
     <Button
         className="p-2 rounded-full w-10 h-10 shadow-md"
-        onClick={onClick}
+        onClick={(e) => {
+            e.preventDefault()
+            if (onClick) {
+                onClick()
+            }
+        }}
     >
         <Edit2 className="w-5 h-5" />
     </Button>

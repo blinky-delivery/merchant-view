@@ -13,7 +13,7 @@ export default function StoreMockup({ storeName }: StoreMockupProps) {
                 {/* Cover Image */}
                 <div className="relative w-full h-full">
                     <img
-                        src="/placeholder.svg?height=192"
+                        src="/placeholder.svg"
                         alt="Store Cover"
                         width={375}
                         height={192}

@@ -1,5 +1,6 @@
 import { useMerchantStore, useStoreSites } from '@/api/storeApi'
 import { userApi, useStoreUser } from '@/api/userApi'
+import EditProductForm from '@/components/forms/edit-product-form'
 import ImageEditorDialog from '@/components/image-editor-dialog'
 import { AppSidebar } from '@/components/navigation/app-sidebar'
 import SelectImageDialog from '@/components/select-image-dialog'
@@ -89,7 +90,8 @@ function RouteComponent() {
         </SidebarInset>
       </SidebarProvider>
       <SelectImageDialog />
-      <ImageEditorDialog storeId={storeId} storeSiteId={activeStoreSiteId ?? null} />
+      <ImageEditorDialog storeId={storeId} storeSiteId={activeStoreSiteId?.id ?? null} />
+      <EditProductForm />
     </>
   )
 
