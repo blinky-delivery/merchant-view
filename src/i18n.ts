@@ -11,7 +11,8 @@ i18n
         fallbackLng: 'en',
         debug: true,
         interpolation: { escapeValue: false },
-        ns: ['common', 'auth', 'dashboard', 'orders', 'products', 'settings'], // List all namespaces
+        // ns: ['common', 'auth', 'dashboard', 'orders', 'products', 'settings'], // List all namespaces
+        ns: ['auth', 'settings'], // List all namespaces
         defaultNS: 'common',
         backend: {
             loadPath: '/locales/{{lng}}/{{ns}}.json', // Load translations per feature
