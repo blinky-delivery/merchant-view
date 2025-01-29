@@ -11,7 +11,7 @@ import { Check } from 'lucide-react';
 interface ImageCardProps {
     imageId: string
     imageUrl: string;
-    onSelected: (selected: boolean, imageId: string) => void;
+    onSelected: (selected: boolean) => void;
     selected: boolean;
 }
 
@@ -23,7 +23,7 @@ const ImageCard: React.FC<ImageCardProps> = ({ imageUrl, onSelected, selected, i
                 'relative w-40 h-40 rounded-md overflow-hidden cursor-pointer',
                 selected && 'bg-black bg-opacity-50'
             )}
-            onClick={() => onSelected(!selected, imageId)}
+            onClick={() => onSelected(!selected)}
         >
             <img src={imageUrl} alt="Image" className="w-full h-full object-cover" />
             {selected && (
@@ -37,7 +37,7 @@ const ImageCard: React.FC<ImageCardProps> = ({ imageUrl, onSelected, selected, i
 };
 
 interface GalleryPhotoSelectorProps {
-    onSelect: (photo: string) => void;
+    onSelect: (image: TImage) => void;
 }
 
 const GalleryPhotoSelector: React.FC<GalleryPhotoSelectorProps> = ({ onSelect }) => {
@@ -49,10 +49,11 @@ const GalleryPhotoSelector: React.FC<GalleryPhotoSelectorProps> = ({ onSelect })
     const { data: reviewImages, isLoading: loadingReview, error: errorReview } = useStoreImages(storeId, ImageType.ITEM_PHOTO, ImageStatus.REVIEW)
     const { data: rejectedImages, isLoading: loadingRejected, error: errorRejected } = useStoreImages(storeId, ImageType.ITEM_PHOTO, ImageStatus.REJECTED)
 
-    const [selectedImage, setSelectedImage] = useState<string | null>(null)
-    const onImageSelected = (selected: boolean, imageId: string) => {
+    const [selectedImage, setSelectedImage] = useState<TImage | null>(null)
+    const onImageSelected = (selected: boolean, image: TImage) => {
         if (selected) {
-            setSelectedImage(imageId)
+            setSelectedImage(image)
+            onSelect(image)
         } else {
             setSelectedImage(null)
         }
@@ -61,7 +62,9 @@ const GalleryPhotoSelector: React.FC<GalleryPhotoSelectorProps> = ({ onSelect })
     const renderImagesGallery = (images: TImage[]) => {
         return (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 min-h-[21rem] max-h-[21rem] overflow-y-scroll">
-                {images.map((image) => <ImageCard imageId={image.id} imageUrl={getImageSrcFromFileId(image.fileId)} onSelected={onImageSelected} selected={image.id == selectedImage} />)}
+                {images.map((image) => <ImageCard imageId={image.id} imageUrl={getImageSrcFromFileId(image.fileId)} onSelected={(selected) => {
+                    if (selected) onImageSelected(selected, image)
+                }} selected={image.id == selectedImage?.id} />)}
             </div >
         )
     }

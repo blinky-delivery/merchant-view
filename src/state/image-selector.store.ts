@@ -1,15 +1,15 @@
 // This will hold the state of common dialogs
-import { ImageType } from '@/api/imageApi'
+import { ImageType, TImage } from '@/api/imageApi'
 import { create } from 'zustand'
 
 export interface ImageSelecetorDialogsState {
     isOpen: boolean
     imageType: ImageType | null
     productId: string | null
-    onImageSelected: ((imageId: string) => void) | null,
+    onImageSelected: ((image: TImage) => void) | null,
     openProductImageSelecetor: (
         productId: string,
-        onImageSelected: (imageId: string) => void,
+        onImageSelected: (image: TImage) => void,
     ) => void,
     closeDialog: () => void,
 }
@@ -19,7 +19,7 @@ export const useImageSelectorDialogState = create<ImageSelecetorDialogsState>((s
     imageType: null,
     productId: null,
     onImageSelected: null,
-    openProductImageSelecetor: (productId: string, onImageSelected: (imageId: string) => void) => {
+    openProductImageSelecetor: (productId: string, onImageSelected: (image: TImage) => void) => {
         set({
             isOpen: true,
             productId: productId,

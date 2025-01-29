@@ -1,18 +1,19 @@
 import { ImageStatus } from '@/api/imageApi';
 import { Product } from '@/api/productApi';
 import { getImageSrcFromFileId } from '@/lib/file-utils';
-import { Clock9, Edit2 } from 'lucide-react';
-import { Button } from '../ui/button';
+import { Clock9, Trash } from 'lucide-react';
 import EditButton from '../edit-button';
+import { Button } from '../ui/button';
 
 interface ProductImageProps {
     primaryImage: Product['primaryImage'];
     width: number;
     height: number;
     onEdit?: () => void;
+    onRemove?: () => void;
 }
 
-const ProductImage: React.FC<ProductImageProps> = ({ primaryImage, width, height, onEdit }) => {
+const ProductImage: React.FC<ProductImageProps> = ({ primaryImage, width, height, onEdit, onRemove }) => {
     const imageEl = (<div className='relative' style={{ width, height }}>
 
         <div className='relative' style={{ width, height }}>
@@ -31,12 +32,26 @@ const ProductImage: React.FC<ProductImageProps> = ({ primaryImage, width, height
     </div>)
     return (
 
-        <div className='relative p-4'>
-            {onEdit && (
-                <div className='absolute top-0 right-0 z-10'>
+        <div className='relative p-4 pt-8'>
+            <div className='flex space-x-1 absolute top-0 right-0 z-10'>
+
+                {onRemove && (
+                    <Button
+                        className="p-2 rounded-full w-10 h-10 shadow-md"
+                        onClick={(e) => {
+                            e.preventDefault()
+                            onRemove()
+                        }}
+                        variant={'destructive'}
+                    >
+                        <Trash className="w-5 h-5" />
+                    </Button>
+                )}
+                {onEdit && (
                     <EditButton onClick={onEdit} />
-                </div>
-            )}
+                )}
+            </div>
+
             {imageEl}
         </div>
     );

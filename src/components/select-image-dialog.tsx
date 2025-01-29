@@ -7,11 +7,14 @@ import GalleryPhotoSelector from './gallery-photo-selector';
 import { useImageSelectorDialogState } from '@/state/image-selector.store';
 import { getImageDimensions, readFileAsDataURL } from '@/lib/file-utils';
 import { useImageEditorDialogState } from '@/state/image-editor.store';
+import { TImage } from '@/api/imageApi';
 
 
 const SelectImageDialog: React.FC = () => {
     const { isOpen, imageType, onImageSelected, productId, closeDialog } = useImageSelectorDialogState()
     const { openImageEditor } = useImageEditorDialogState()
+    const [selectedImage, setSelectedImage] = useState<TImage | null>(null)
+
 
     const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -43,6 +46,13 @@ const SelectImageDialog: React.FC = () => {
     }
 
 
+    const onSaveHanlder = () => {
+        if (selectedImage && onImageSelected) {
+            onImageSelected(selectedImage)
+            closeDialog()
+        }
+    }
+
     return (
         <Dialog open={isOpen} onOpenChange={(open) => {
             if (!open) closeDialog()
@@ -70,14 +80,14 @@ const SelectImageDialog: React.FC = () => {
                         <h5 className='text-muted-foreground'>Maximum resolution: 1400x800</h5>
                     </div>
                     <Separator />
-                    <GalleryPhotoSelector onSelect={(imageId) => { }} />
+                    <GalleryPhotoSelector onSelect={setSelectedImage} />
                 </div>
                 <Separator />
                 <div className='flex justify-between'>
                     <Button variant='outline'>
                         View Photo Guidelines
                     </Button>
-                    <Button>
+                    <Button onClick={onSaveHanlder}>
                         Save Changes
                     </Button>
                 </div>

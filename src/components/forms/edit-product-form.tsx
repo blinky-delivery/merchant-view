@@ -14,10 +14,11 @@ import { useImageSelectorDialogState } from "@/state/image-selector.store";
 import { useEditProductForm } from "@/state/edit-product-form-store";
 import ProductImage from "../menu/product-image";
 import InfoLabel from "./info-label";
+import { ImageStatus } from "@/api/imageApi";
 
 export default function EditProductForm() {
 
-    const { isOpen, product, menuCategory, closeForm } = useEditProductForm()
+    const { isOpen, product, menuCategory, primaryImage, setProductPrimaryImage, closeForm } = useEditProductForm()
 
     const { openProductImageSelecetor } = useImageSelectorDialogState()
 
@@ -66,7 +67,7 @@ export default function EditProductForm() {
                 description: values.description === undefined ? null : values.description,
                 price: values.price,
                 taxRate: values.taxRate === undefined ? null : values.taxRate,
-                primaryImageId: product.primaryImage?.id ?? null,
+                primaryImageId: primaryImage?.id ?? null,
                 productId: product.id,
 
             },
@@ -74,7 +75,6 @@ export default function EditProductForm() {
                     onSuccess: ({ data: createdProduct }) => {
                         queryClient.invalidateQueries({ queryKey: ['products', menuCategory?.id] })
                         closeForm()
-                        openProductImageSelecetor(createdProduct.id, () => { })
                     }
                 }
             )
@@ -130,10 +130,10 @@ export default function EditProductForm() {
                                     </FormItem>
                                 )}
                             ></FormField>
-                            <InfoLabel
+                            {primaryImage?.status == ImageStatus.REVIEW && <InfoLabel
                                 title="Photo Pending Review"
                                 subtitle="It typically takes 2-3 days for Blinky to review your photo. Once approved, it'll appear on your Blinky menu."
-                            />
+                            />}
                             <div className="flex justify-between">
                                 <div className="flex flex-col space-y-8">
                                     <FormField
@@ -174,10 +174,15 @@ export default function EditProductForm() {
                                 </div>
 
                                 <ProductImage
-                                    height={120}
-                                    width={120}
-                                    primaryImage={product.primaryImage}
-                                    onEdit={() => { }}
+                                    height={150}
+                                    width={150}
+                                    primaryImage={primaryImage}
+                                    onEdit={() => {
+                                        openProductImageSelecetor(product.id, (primaryImage) => {
+                                            setProductPrimaryImage(primaryImage)
+                                        })
+                                    }}
+                                    onRemove={() => { }}
                                 />
 
                             </div>
