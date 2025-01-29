@@ -60,7 +60,7 @@ const GalleryPhotoSelector: React.FC<GalleryPhotoSelectorProps> = ({ onSelect })
 
     const renderImagesGallery = (images: TImage[]) => {
         return (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-12">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 min-h-[21rem] max-h-[21rem] overflow-y-scroll">
                 {images.map((image) => <ImageCard imageId={image.id} imageUrl={getImageSrcFromFileId(image.fileId)} onSelected={onImageSelected} selected={image.id == selectedImage} />)}
             </div >
         )
