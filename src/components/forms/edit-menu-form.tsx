@@ -1,8 +1,7 @@
 import { Menu, menuApi } from "@/api/menuApi";
 import { queryClient } from "@/main";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
@@ -25,7 +24,6 @@ interface EditMenuFormProps {
 }
 
 export default function EditMenuForm({ storeId, sites, menu, open, onOpenChanged }: EditMenuFormProps) {
-    const navigate = useNavigate()
     const [error, setError] = useState<string>("")
 
 
@@ -56,6 +54,7 @@ export default function EditMenuForm({ storeId, sites, menu, open, onOpenChanged
         },
 
     })
+
 
 
     const onSubmit = (values: z.infer<typeof formSchema>) => {

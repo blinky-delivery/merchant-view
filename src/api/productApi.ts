@@ -27,6 +27,7 @@ interface CreateProductPayload {
 }
 
 interface UpdateProductPayload {
+    productId: string
     menuCategoryId: string
     name: string
     description: string | null,

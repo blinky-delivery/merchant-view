@@ -1,6 +1,6 @@
 import { queryClient } from "@/main";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
@@ -13,6 +13,7 @@ import { productApi } from "@/api/productApi";
 import { useImageSelectorDialogState } from "@/state/image-selector.store";
 import { useEditProductForm } from "@/state/edit-product-form-store";
 import ProductImage from "../menu/product-image";
+import InfoLabel from "./info-label";
 
 export default function EditProductForm() {
 
@@ -37,20 +38,24 @@ export default function EditProductForm() {
     const mutation = useMutation(
         {
 
-            mutationFn: productApi.createProduct,
+            mutationFn: productApi.updateProduct,
             onError: (error: any) => setError(error.message)
         }
     )
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: {
+    })
+
+    useEffect(() => {
+        form.reset({
             description: product?.description ?? undefined,
             name: product?.name,
             price: product?.price,
             taxRate: product?.taxRate ?? undefined,
-        }
-    })
+        })
+    }, [product])
+
 
 
     const onSubmit = (values: z.infer<typeof formSchema>) => {
@@ -61,6 +66,8 @@ export default function EditProductForm() {
                 description: values.description === undefined ? null : values.description,
                 price: values.price,
                 taxRate: values.taxRate === undefined ? null : values.taxRate,
+                primaryImageId: product.primaryImage?.id ?? null,
+                productId: product.id,
 
             },
                 {
@@ -79,7 +86,7 @@ export default function EditProductForm() {
 
     return (
         <Sheet open={isOpen} onOpenChange={(open) => { if (!open) closeForm() }} >
-            <SheetContent className="min-w-[600px]" >
+            <SheetContent className="min-w-[600px]  overflow-y-scroll" >
                 <SheetHeader>
                     <SheetTitle>Edit Item</SheetTitle>
                     {/* <SheetDescription>
@@ -123,6 +130,10 @@ export default function EditProductForm() {
                                     </FormItem>
                                 )}
                             ></FormField>
+                            <InfoLabel
+                                title="Photo Pending Review"
+                                subtitle="It typically takes 2-3 days for Blinky to review your photo. Once approved, it'll appear on your Blinky menu."
+                            />
                             <div className="flex justify-between">
                                 <div className="flex flex-col space-y-8">
                                     <FormField
