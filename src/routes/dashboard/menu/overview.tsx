@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import SectionHeader from '@/components/navigation/section-header'
 import CreateModifierForm from '@/components/forms/create-modifer-form'
 import { useNavigationStore } from '@/state/store'
+import { useModifiersBySite } from '@/api/modifierApi'
 
 export const Route = createFileRoute('/dashboard/menu/overview')({
   staticData: {
@@ -21,6 +22,9 @@ function RouteComponent() {
   const { data: menus, isLoading: menusLoading } = useMenus(storeId)
   const { data: sites, isLoading: sitesLoading } = useStoreSites(storeId)
   const activeSite = useNavigationStore((state) => state.storeSite)
+  const { data: modifiers, isLoading: modifiersLoading } = useModifiersBySite(activeSite!.id)
+
+
 
   if (!sites || !menus || !activeSite) return null
 
@@ -39,10 +43,13 @@ function RouteComponent() {
           </div>
         </TabsContent>
         <TabsContent value='modifiers'>
-          <div className='flex flex-col py-4'>
+          <div className='flex flex-col py-4 space-y-4'>
             <div className='flex justify-between'>
               <SectionHeader title='Modifiers' subtitle='Here you can manage your menu modifers for customizable menu items' />
               <CreateModifierForm menuId={menus[0].id} site={activeSite} storeId={storeId} />
+            </div>
+            <div>
+              modifers : {modifiers?.length}
             </div>
           </div>
         </TabsContent>

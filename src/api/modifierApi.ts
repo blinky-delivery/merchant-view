@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import axiosInstance, { ApiResponse } from "./axiosInstance"
 
 export interface Modifer {
@@ -42,6 +43,23 @@ export interface CreateModifierPayload {
 
 export const modifierApi = {
     createModifier: async (payload: CreateModifierPayload) => {
-        return axiosInstance.post<ApiResponse<Modifer>>('modifiers', payload).then((resp) => resp.data)
+        return axiosInstance.post<ApiResponse<Modifer>>('modifier', payload).then((resp) => resp.data)
+    },
+    getModifiersByStoreSite: async (siteId: string) => {
+        return axiosInstance.get<ApiResponse<any[]>>('modifierc', {
+            params: {
+                site_id: siteId
+            }
+        }).then((resp) => resp.data)
     }
+}
+
+export const useModifiersBySite = (siteId: string) => {
+    return useQuery<any[]>({
+        queryKey: ['modifiers', siteId],
+        queryFn: async () => {
+            const resp = await modifierApi.getModifiersByStoreSite(siteId)
+            return resp.data
+        }
+    })
 }

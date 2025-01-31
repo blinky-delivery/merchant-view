@@ -61,15 +61,15 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
         }),
         required: z.boolean(),
         multipleAllowed: z.boolean(),
-        minQuantity: z.number().optional(),
-        maxQuantity: z.number().optional(),
-        maxFreeQuantity: z.number().optional(),
+        minQuantity: z.coerce.number().optional(),
+        maxQuantity: z.coerce.number().optional(),
+        maxFreeQuantity: z.coerce.number().optional(),
         options: z.array(
             z.object({
                 name: z.string().min(2, {
                     message: 'Name must be at least 2 characters.',
                 }),
-                price: z.number().optional(),
+                price: z.coerce.number().optional(),
             })
         ),
         productsIds: z.array(z.string())
@@ -208,8 +208,12 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
                                     components={animatedComponents}
                                     defaultValue={[]}
                                     isMulti
-                                    onChange={(value) => setSelectedProducts(value as Product[])}
-                                    options={productsData}
+                                    onChange={(value) => {
+                                        const newSelectedProducts = value as Product[]
+                                        setSelectedProducts(newSelectedProducts)
+                                        form.setValue('productsIds', newSelectedProducts.map((prod) => prod.id))
+                                    }}
+                                    options={products}
                                     getOptionLabel={(prod: Product) => prod.name}
                                     isLoading={productsLoading}
                                     onInputChange={(query, _) => {
