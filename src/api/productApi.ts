@@ -49,10 +49,11 @@ export const productApi = {
             }
         }).then((resp) => resp.data)
     },
-    getProductsByMenu: async (menuId: string) => {
+    getProductsByNameQueryAndMenu: async (menuId: string, productNameQuery: string) => {
         return axiosInstance.get<ApiResponse<Product[]>>('/product/menu', {
             params: {
-                menu_id: menuId
+                menu_id: menuId,
+                product_name_query: productNameQuery,
             }
         }).then((resp) => resp.data)
     },
@@ -77,11 +78,11 @@ export const useProductsByCategory = (menuCategoryId: string) => {
     })
 }
 
-export const useProductsByMenu = (menuId: string) => {
+export const useProductsByNameQueryAndMenu = (menuId: string, productNameQuery: string) => {
     return useQuery<Product[]>({
-        queryKey: ['products', menuId],
+        queryKey: ['products', menuId, productNameQuery],
         queryFn: async () => {
-            const resp = await productApi.getProductsByMenu(menuId)
+            const resp = await productApi.getProductsByNameQueryAndMenu(menuId, productNameQuery)
             return resp.data
         }
     })

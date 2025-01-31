@@ -8,7 +8,7 @@ import {
 } from '@tanstack/react-router'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 
 import { z } from 'zod'
@@ -40,7 +40,7 @@ import { Sortable, SortableDragHandle, SortableItem } from "../ui/sortable"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible"
 import { Switch } from "../ui/switch"
 import makeAnimated from 'react-select/animated';
-import { useProductsByMenu } from "@/api/productApi"
+import { Product, useProductsByNameQueryAndMenu } from "@/api/productApi"
 
 interface CreateModifierFormProps {
     site: StoreSite
@@ -128,8 +128,18 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
         )
     }
 
-    const { data: products, isLoading: productsLoading } = useProductsByMenu(menuId)
+    const [productNameQuery, setProductNameQuery] = useState('')
 
+    const [products, setProducts] = useState<Product[]>([])
+    const [selectedProducts, setSelectedProducts] = useState<Product[]>([])
+
+    const { data: productsData, isLoading: productsLoading } = useProductsByNameQueryAndMenu(menuId, productNameQuery)
+
+    useEffect(() => {
+        if (productsData) {
+            setProducts(productsData)
+        }
+    }, [productsData])
 
     const maxOptionsSelects = [
         { label: 'No Max', value: undefined },
@@ -150,7 +160,9 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
 
     const animatedComponents = makeAnimated()
 
+
     if (!products) return null
+
 
     return (
         <Sheet open={sheetOpen} onOpenChange={setSheetOpen} modal={true}>
@@ -192,16 +204,25 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
                             ></FormField>
 
 
-                            <div className="flex flex-col space-y-1">
-                                <h2 className="text-foreground font-semibold text-lg">Used in</h2>
-                                {!form.watch().productsIds.length && <h3 className="text-muted-foreground">0 items</h3>}
+                            <div className="flex flex-col space-y-4">
+                                <div className="space-y-1">
+                                    <h2 className="text-foreground font-semibold text-lg">Used in</h2>
+                                    {selectedProducts.length == 0 && <h3 className="text-muted-foreground">0 items</h3>}
+                                </div>
                                 <Select
                                     closeMenuOnSelect={false}
                                     components={animatedComponents}
                                     defaultValue={[]}
                                     isMulti
+                                    onChange={(value) => setSelectedProducts(value as Product[])}
+                                    options={productsData}
+                                    getOptionLabel={(prod: Product) => prod.name}
+                                    isLoading={productsLoading}
+                                    onInputChange={(query, _) => {
+                                        setProductNameQuery(query)
+                                    }}
+                                    noOptionsMessage={() => 'No products'}
 
-                                    options={products}
                                 />
 
                             </div>
