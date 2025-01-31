@@ -86,7 +86,7 @@ export default function EditProductForm() {
 
     return (
         <Sheet open={isOpen} onOpenChange={(open) => { if (!open) closeForm() }} >
-            <SheetContent className="min-w-[600px]  overflow-y-scroll" >
+            <SheetContent className="min-w-[600px] overflow-y-auto" >
                 <SheetHeader>
                     <SheetTitle>Edit Item</SheetTitle>
                     {/* <SheetDescription>

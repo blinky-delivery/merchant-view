@@ -55,7 +55,6 @@ export interface ResortMenuCategoriesPayload {
     newOrder: string[]
 }
 
-
 export const menuApi = {
     getMenu: async (menuId: string) => {
         return axiosInstance.get<ApiResponse<Menu>>(`/menu/`, {
@@ -96,7 +95,7 @@ export const menuApi = {
 
     resortMenuCategories: async (payload: ResortMenuCategoriesPayload) => {
         return axiosInstance.put<ApiResponse<string[]>>('menu/categories/sort', payload).then((resp) => resp.data)
-    }
+    },
 
 }
 

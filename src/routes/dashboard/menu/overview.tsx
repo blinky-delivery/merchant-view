@@ -4,6 +4,8 @@ import MenuCard from '@/components/menu/menu-card'
 import { useStoreSites } from '@/api/storeApi'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import SectionHeader from '@/components/navigation/section-header'
+import CreateModifierForm from '@/components/forms/create-modifer-form'
+import { useNavigationStore } from '@/state/store'
 
 export const Route = createFileRoute('/dashboard/menu/overview')({
   staticData: {
@@ -18,12 +20,13 @@ function RouteComponent() {
 
   const { data: menus, isLoading: menusLoading } = useMenus(storeId)
   const { data: sites, isLoading: sitesLoading } = useStoreSites(storeId)
+  const activeSite = useNavigationStore((state) => state.storeSite)
 
-  if (!sites || !menus) return null
+  if (!sites || !menus || !activeSite) return null
 
   return (
     <div className="flex flex-col space-y-4">
-      <Tabs defaultValue='overview' className='w-full'>
+      <Tabs defaultValue='modifiers' className='w-full'>
         <TabsList className="grid w-full grid-cols-2 mb-4 h-14 text-lg">
           <TabsTrigger value="overview" className='h-12 text-lg'>Overview </TabsTrigger>
           <TabsTrigger value="modifiers" className='h-12 text-lg'>Modifiers</TabsTrigger>
@@ -37,7 +40,10 @@ function RouteComponent() {
         </TabsContent>
         <TabsContent value='modifiers'>
           <div className='flex flex-col py-4'>
-            <SectionHeader title='Modifiers' subtitle='Here you can manage your menu modifers for customizable menu items' />
+            <div className='flex justify-between'>
+              <SectionHeader title='Modifiers' subtitle='Here you can manage your menu modifers for customizable menu items' />
+              <CreateModifierForm menuId={menus[0].id} site={activeSite} storeId={storeId} />
+            </div>
           </div>
         </TabsContent>
       </Tabs>
