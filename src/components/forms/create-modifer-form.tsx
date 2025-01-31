@@ -23,8 +23,9 @@ import {
 } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
+import Select from 'react-select';
 import {
-    Select,
+    Select as CustomSelect,
     SelectContent,
     SelectItem,
     SelectTrigger,
@@ -38,6 +39,8 @@ import { Separator } from "../ui/separator"
 import { Sortable, SortableDragHandle, SortableItem } from "../ui/sortable"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible"
 import { Switch } from "../ui/switch"
+import makeAnimated from 'react-select/animated';
+import { useProductsByMenu } from "@/api/productApi"
 
 interface CreateModifierFormProps {
     site: StoreSite
@@ -68,7 +71,8 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
                 }),
                 price: z.number().optional(),
             })
-        )
+        ),
+        productsIds: z.array(z.string())
 
     })
 
@@ -76,9 +80,12 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
+            productsIds: [],
             options: [
                 {
                     name: '',
+
+
                 }
             ]
         },
@@ -110,7 +117,7 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
                     name: opt.name,
                     price: opt.price ?? 0,
                 })),
-                productsIds: []
+                productsIds: values.productsIds,
             },
             {
                 onSuccess: ({ data }) => {
@@ -120,6 +127,8 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
             },
         )
     }
+
+    const { data: products, isLoading: productsLoading } = useProductsByMenu(menuId)
 
 
     const maxOptionsSelects = [
@@ -138,6 +147,10 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
         { label: '1', value: 1 },
         { label: '2', value: 2 },
     ]
+
+    const animatedComponents = makeAnimated()
+
+    if (!products) return null
 
     return (
         <Sheet open={sheetOpen} onOpenChange={setSheetOpen} modal={true}>
@@ -178,12 +191,28 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
                                 )}
                             ></FormField>
 
+
+                            <div className="flex flex-col space-y-1">
+                                <h2 className="text-foreground font-semibold text-lg">Used in</h2>
+                                {!form.watch().productsIds.length && <h3 className="text-muted-foreground">0 items</h3>}
+                                <Select
+                                    closeMenuOnSelect={false}
+                                    components={animatedComponents}
+                                    defaultValue={[]}
+                                    isMulti
+
+                                    options={products}
+                                />
+
+                            </div>
+
                             <Separator />
 
                             <div className="flex flex-col space-y-4">
                                 <div className="flex flex-col space-y-1">
                                     <h2 className="text-foreground font-semibold text-lg">Options</h2>
                                     <h3 className="text-muted-foreground">Give your customers a list of options to choose from.</h3>
+
                                 </div>
                                 <Sortable
                                     value={fields}
@@ -336,7 +365,7 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
                                                                     <div className="flex flex-row items-center justify-between">
                                                                         <FormLabel>Minimum:</FormLabel>
                                                                         <div className="w-32">
-                                                                            <Select onValueChange={field.onChange} defaultValue={minOptionsSelects[0].label}>
+                                                                            <CustomSelect onValueChange={field.onChange} defaultValue={minOptionsSelects[0].label}>
                                                                                 <FormControl>
                                                                                     <SelectTrigger>
                                                                                         <SelectValue />
@@ -345,7 +374,7 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
                                                                                 <SelectContent className="">
                                                                                     {minOptionsSelects.map((opt) => <SelectItem key={opt.label} value={opt.label}>{opt.label}</SelectItem>)}
                                                                                 </SelectContent>
-                                                                            </Select>
+                                                                            </CustomSelect>
                                                                         </div>
                                                                     </div>
 
@@ -363,7 +392,7 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
                                                                     <div className="flex flex-row items-center justify-between">
                                                                         <FormLabel>Maximum:</FormLabel>
                                                                         <div className="w-32">
-                                                                            <Select onValueChange={field.onChange} defaultValue={maxFeeOptionsSelects[0].label}>
+                                                                            <CustomSelect onValueChange={field.onChange} defaultValue={maxFeeOptionsSelects[0].label}>
                                                                                 <FormControl>
                                                                                     <SelectTrigger>
                                                                                         <SelectValue />
@@ -372,7 +401,7 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
                                                                                 <SelectContent className="">
                                                                                     {maxOptionsSelects.map((opt) => <SelectItem key={opt.label} value={opt.label}>{opt.label}</SelectItem>)}
                                                                                 </SelectContent>
-                                                                            </Select>
+                                                                            </CustomSelect>
                                                                         </div>
                                                                     </div>
 
@@ -389,7 +418,7 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
                                                                     <div className="flex flex-row items-center justify-between">
                                                                         <FormLabel>Maximum Free:</FormLabel>
                                                                         <div className="w-32">
-                                                                            <Select onValueChange={field.onChange} defaultValue={maxFeeOptionsSelects[0].label}>
+                                                                            <CustomSelect onValueChange={field.onChange} defaultValue={maxFeeOptionsSelects[0].label}>
                                                                                 <FormControl>
                                                                                     <SelectTrigger>
                                                                                         <SelectValue />
@@ -398,7 +427,7 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
                                                                                 <SelectContent className="">
                                                                                     {maxOptionsSelects.map((opt) => <SelectItem key={opt.label} value={opt.label}>{opt.label}</SelectItem>)}
                                                                                 </SelectContent>
-                                                                            </Select>
+                                                                            </CustomSelect>
                                                                         </div>
                                                                     </div>
 
