@@ -76,7 +76,6 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
 
     })
 
-
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -84,8 +83,6 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
             options: [
                 {
                     name: '',
-
-
                 }
             ]
         },
@@ -95,7 +92,6 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
         control: form.control,
         name: "options",
     })
-
 
     const createModifierMutation = useMutation({
         mutationFn: modifierApi.createModifier,
@@ -129,10 +125,8 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
     }
 
     const [productNameQuery, setProductNameQuery] = useState('')
-
     const [products, setProducts] = useState<Product[]>([])
     const [selectedProducts, setSelectedProducts] = useState<Product[]>([])
-
     const { data: productsData, isLoading: productsLoading } = useProductsByNameQueryAndMenu(menuId, productNameQuery)
 
     useEffect(() => {
