@@ -76,11 +76,14 @@
 }
 
 @layer base {
+
   * {
     @apply border-border;
+    @apply font-montserrat;
   }
 
   body {
     @apply bg-background text-foreground;
+
   }
 }

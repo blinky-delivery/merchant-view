@@ -1,4 +1,4 @@
-import { Menu, useMenuCategories } from '@/api/menuApi'
+import { Menu, useMenuCategories, useSiteMenu } from '@/api/menuApi'
 
 import { StoreSite } from '@/api/storeApi';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
@@ -11,26 +11,25 @@ import MenuCategoryCard from './menu-category-card';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import SortMenuCategoriesForm from '../forms/sort-menu-categories';
 import { useState } from 'react';
-import { useNavigationStore } from '@/state/store';
 
 type MenuCardProps = {
-    menu: Menu
     sites: StoreSite[]
+    activeSite: StoreSite,
     storeId: string
 }
 
-const MenuCard: React.FC<MenuCardProps> = ({ menu, sites, storeId }: MenuCardProps) => {
+const MenuCard: React.FC<MenuCardProps> = ({ sites, activeSite, storeId }: MenuCardProps) => {
     const onSaveHnadler = (imageBlob: Blob) => {
         const imageURL = URL.createObjectURL(imageBlob)
     }
-    const { data: menuCategories, isLoading: menuCategoriesLoading } = useMenuCategories(menu.id)
     const [dropdDownOpen, setDropDownOpen] = useState(false)
 
     const [showEditMenuForm, setShowEditMenuForm] = useState(false)
-    const activeSite = useNavigationStore((state) => state.storeSite)
 
-    if (!activeSite) return null
+    const { data: menu, isLoading: menuisLoading } = useSiteMenu(activeSite.id)
 
+
+    if (!menu) return null
 
     return (
         <>
@@ -66,7 +65,7 @@ const MenuCard: React.FC<MenuCardProps> = ({ menu, sites, storeId }: MenuCardPro
                                             <DropdownMenuSeparator />
                                             <DropdownMenuGroup>
 
-                                                <SortMenuCategoriesForm menuId={menu.id} categories={menuCategories ?? []}>
+                                                <SortMenuCategoriesForm menuId={menu.id}>
                                                     <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                                                         <ArrowUpDown />
                                                         <span>Rearrange Categories</span>
@@ -92,9 +91,8 @@ const MenuCard: React.FC<MenuCardProps> = ({ menu, sites, storeId }: MenuCardPro
                 <CardContent>
                     <div>
                         <div className='flex flex-col space-y-4'>
-                            {menuCategories?.map((category) => (
-                                <MenuCategoryCard key={category.id} category={category} menuId={menu.id} storeId={storeId} />
-                            ))}
+                            <CategoryList menuId={menu.id} storeId={storeId} />
+
                         </div>
                         <CreateMenuCategoryForm menuId={menu.id} storeId={storeId}>
                             <Button className='mt-4 items-center text-muted-foreground font-semibold space-x-1' variant={'outline'}>
@@ -109,4 +107,23 @@ const MenuCard: React.FC<MenuCardProps> = ({ menu, sites, storeId }: MenuCardPro
     );
 };
 
+type CategoryListProps = {
+    menuId: string
+    storeId: string
+}
+
+const CategoryList: React.FC<CategoryListProps> = ({ menuId, storeId }) => {
+
+    const { data: categories, isLoading: menuCategoriesLoading } = useMenuCategories(menuId)
+    return (
+        <div className='flex flex-col space-y-4'>
+            {categories?.map((category) => (
+                <MenuCategoryCard key={category.id} category={category} menuId={menuId} storeId={storeId} />
+            ))}
+        </div>
+    )
+}
+
 export default MenuCard
+
+

@@ -1,5 +1,4 @@
 import { StoreSite } from "@/api/storeApi"
-import { menuApi } from '@/api/menuApi'
 import { Input } from '@/components/ui/input'
 import { queryClient } from '@/main'
 import { useMutation } from '@tanstack/react-query'
@@ -22,7 +21,6 @@ import {
     FormMessage,
 } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
 import Select from 'react-select';
 import {
     Select as CustomSelect,
@@ -208,6 +206,7 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
                                     closeMenuOnSelect={false}
                                     isMulti={true}
                                     hideSelectedOptions={true}
+                                    components={animatedComponents}
                                     onChange={(value) => {
                                         const newSelectedProducts = value as { label: string, value: string }[]
                                         form.setValue('productsIds', newSelectedProducts.map((prod) => prod.value))

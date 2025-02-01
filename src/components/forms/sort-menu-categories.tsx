@@ -1,12 +1,11 @@
-import { menuApi, MenuCategory } from "@/api/menuApi"
+import { menuApi, MenuCategory, useMenuCategories } from "@/api/menuApi"
 
 interface SortMenuCategoriesFormProps {
     menuId: string
-    categories: MenuCategory[]
     children: React.ReactNode
 }
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog"
 import { Sortable, SortableDragHandle, SortableItem } from "../ui/sortable"
 import { GripVertical } from "lucide-react"
@@ -15,11 +14,18 @@ import { queryClient } from "@/main"
 import FormSubmitButtons from "./form-submit-buttons"
 
 
-const SortMenuCategoriesForm: React.FC<SortMenuCategoriesFormProps> = ({ menuId, categories, children }) => {
+const SortMenuCategoriesForm: React.FC<SortMenuCategoriesFormProps> = ({ menuId, children }) => {
     const [dialogOpen, setDialogOpen] = useState(false)
     const [error, setError] = useState<string>('')
+    const { data: categories, isLoading: menuCategoriesLoading } = useMenuCategories(menuId)
+    const [sortedCategories, setSortedCategories] = useState<MenuCategory[]>([])
 
-    const [sortedCategories, setSortedCategories] = useState(categories)
+    useEffect(() => {
+        if (categories) {
+            setSortedCategories(categories)
+        }
+    }, [categories])
+
     const swapCategories = (index1: number, index2: number) => {
         setSortedCategories((prevCategories) => {
             const newCategories = [...prevCategories]

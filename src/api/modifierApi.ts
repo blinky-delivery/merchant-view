@@ -26,7 +26,7 @@ export interface ModifierOption {
     createdAt: Date;
     sort: number;
     price: number;
-    modiferId: string;
+    modifierId: string;
 }
 
 export interface CreateModifierPayload {
@@ -59,7 +59,7 @@ export const modifierApi = {
 }
 
 export const useModifiersBySite = (siteId: string) => {
-    return useQuery<any[]>({
+    return useQuery<Modifer[]>({
         queryKey: ['modifiers', siteId],
         queryFn: async () => {
             const resp = await modifierApi.getModifiersByStoreSite(siteId)
