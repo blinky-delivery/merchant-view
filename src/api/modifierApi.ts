@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance, { ApiResponse } from "./axiosInstance"
+import { Product } from "./productApi";
 
 export interface Modifer {
     name: string;
@@ -14,6 +15,9 @@ export interface Modifer {
     maxQuantity: number;
     maxFreeQuantity: number | null;
     options: ModifierOption[]
+    modifiersToProducts: {
+        product: Product
+    }[] | null
 }
 
 export interface ModifierOption {
@@ -46,7 +50,7 @@ export const modifierApi = {
         return axiosInstance.post<ApiResponse<Modifer>>('modifier', payload).then((resp) => resp.data)
     },
     getModifiersByStoreSite: async (siteId: string) => {
-        return axiosInstance.get<ApiResponse<any[]>>('modifierc', {
+        return axiosInstance.get<ApiResponse<any[]>>('modifier', {
             params: {
                 site_id: siteId
             }

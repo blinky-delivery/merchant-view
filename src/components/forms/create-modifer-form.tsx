@@ -71,7 +71,7 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
                 }),
                 price: z.coerce.number().optional(),
             })
-        ),
+        ).min(1),
         productsIds: z.array(z.string())
 
     })
@@ -79,6 +79,8 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
+            required: false,
+            multipleAllowed: false,
             productsIds: [],
             options: [
                 {
@@ -125,13 +127,12 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
     }
 
     const [productNameQuery, setProductNameQuery] = useState('')
-    const [products, setProducts] = useState<Product[]>([])
-    const [selectedProducts, setSelectedProducts] = useState<Product[]>([])
+    const [products, setProducts] = useState<{ label: string, value: string }[]>([])
     const { data: productsData, isLoading: productsLoading } = useProductsByNameQueryAndMenu(menuId, productNameQuery)
 
     useEffect(() => {
         if (productsData) {
-            setProducts(productsData)
+            setProducts(productsData.map((prodData) => ({ label: prodData.name, value: prodData.id })))
         }
     }, [productsData])
 
@@ -184,7 +185,7 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
                                 name="name"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Name</FormLabel>
+                                        <FormLabel className="text-lg">Name</FormLabel>
                                         <FormControl>
                                             <Input
                                                 placeholder="E.g. 'Toppings'"
@@ -201,120 +202,128 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
                             <div className="flex flex-col space-y-4">
                                 <div className="space-y-1">
                                     <h2 className="text-foreground font-semibold text-lg">Used in</h2>
-                                    {selectedProducts.length == 0 && <h3 className="text-muted-foreground">0 items</h3>}
+                                    {form.watch().productsIds.length == 0 && <h3 className="text-muted-foreground">0 items</h3>}
                                 </div>
                                 <Select
                                     closeMenuOnSelect={false}
-                                    components={animatedComponents}
-                                    defaultValue={[]}
-                                    isMulti
+                                    isMulti={true}
+                                    hideSelectedOptions={true}
                                     onChange={(value) => {
-                                        const newSelectedProducts = value as Product[]
-                                        setSelectedProducts(newSelectedProducts)
-                                        form.setValue('productsIds', newSelectedProducts.map((prod) => prod.id))
+                                        const newSelectedProducts = value as { label: string, value: string }[]
+                                        form.setValue('productsIds', newSelectedProducts.map((prod) => prod.value))
                                     }}
                                     options={products}
-                                    getOptionLabel={(prod: Product) => prod.name}
                                     isLoading={productsLoading}
                                     onInputChange={(query, _) => {
-                                        setProductNameQuery(query)
+                                        if (query != productNameQuery) {
+                                            setProductNameQuery(query)
+                                        }
                                     }}
                                     noOptionsMessage={() => 'No products'}
 
                                 />
 
                             </div>
-
                             <Separator />
-
-                            <div className="flex flex-col space-y-4">
-                                <div className="flex flex-col space-y-1">
-                                    <h2 className="text-foreground font-semibold text-lg">Options</h2>
-                                    <h3 className="text-muted-foreground">Give your customers a list of options to choose from.</h3>
-
-                                </div>
-                                <Sortable
-                                    value={fields}
-                                    onMove={({ activeIndex, overIndex }) =>
-                                        move(activeIndex, overIndex)
-                                    }
-                                    overlay={
-                                        <div className="grid grid-cols-[0.5fr,1fr,auto,auto] items-center gap-2">
-                                            <div className="h-8 w-full rounded-sm bg-primary/10" />
-                                            <div className="h-8 w-full rounded-sm bg-primary/10" />
-                                            <div className="size-8 shrink-0 rounded-sm bg-primary/10" />
-                                            <div className="size-8 shrink-0 rounded-sm bg-primary/10" />
-                                        </div>
-                                    }
-                                >
-                                    <div className="flex w-full flex-col gap-2">
-                                        {fields.map((field, index) => (
-                                            <SortableItem key={field.id} value={field.id} asChild>
-                                                <div className="grid grid-cols-[1fr,0.5fr,auto,auto] items-center gap-2">
-
-                                                    <FormField
-                                                        control={form.control}
-                                                        name={`options.${index}.name`}
-                                                        render={({ field }) => (
-                                                            <FormItem>
-                                                                <FormControl>
-                                                                    <Input className="h-8" {...field} />
-                                                                </FormControl>
-                                                            </FormItem>
-                                                        )}
-                                                    />
-
-                                                    <FormField
-                                                        control={form.control}
-                                                        name={`options.${index}.price`}
-                                                        render={({ field }) => (
-                                                            <FormItem>
-                                                                <FormControl>
-                                                                    <Input className="h-8" {...field} placeholder="0.0 MAD" />
-                                                                </FormControl>
-                                                            </FormItem>
-                                                        )}
-                                                    />
-
-
-                                                    <SortableDragHandle
-                                                        variant="outline"
-                                                        size="icon"
-                                                        className="size-8 shrink-0"
-                                                    >
-                                                        <GripVertical />
-
-                                                    </SortableDragHandle>
-                                                    <Button
-                                                        type="button"
-                                                        variant="outline"
-                                                        size="icon"
-                                                        className="size-8 shrink-0"
-                                                        onClick={() => remove(index)}
-                                                    >
-                                                        <TrashIcon
-                                                            className="size-4 text-destructive"
-                                                            aria-hidden="true"
-                                                        />
-                                                        <span className="sr-only">Remove</span>
-                                                    </Button>
+                            <FormField
+                                control={form.control}
+                                name='options'
+                                render={(field) => (
+                                    <FormItem>
+                                        <FormLabel>
+                                            <div className="flex flex-col space-y-1">
+                                                <h2 className="text-lg">Options</h2>
+                                                <h3 className="text-muted-foreground font-normal text-base">Give your customers a list of options to choose from.</h3>
+                                            </div>
+                                        </FormLabel>
+                                        <div className="h-1"></div>
+                                        <Sortable
+                                            value={fields}
+                                            onMove={({ activeIndex, overIndex }) =>
+                                                move(activeIndex, overIndex)
+                                            }
+                                            overlay={
+                                                <div className="grid grid-cols-[0.5fr,1fr,auto,auto] items-center gap-2">
+                                                    <div className="h-8 w-full rounded-sm bg-primary/10" />
+                                                    <div className="h-8 w-full rounded-sm bg-primary/10" />
+                                                    <div className="size-8 shrink-0 rounded-sm bg-primary/10" />
+                                                    <div className="size-8 shrink-0 rounded-sm bg-primary/10" />
                                                 </div>
-                                            </SortableItem>
-                                        ))}
-                                    </div>
-                                </Sortable>
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    size="sm"
-                                    className="w-fit place-self-end space-x-1"
-                                    onClick={() => append({ name: "" })}
-                                >
-                                    <Plus size='16' />
-                                    <span>Add option</span>
-                                </Button>
+                                            }
+                                        >
+                                            <div className="flex w-full flex-col gap-2">
+                                                {fields.map((field, index) => (
+                                                    <SortableItem key={field.id} value={field.id} asChild>
+                                                        <div className="grid grid-cols-[1fr,0.5fr,auto,auto] items-center gap-2">
 
-                            </div>
+                                                            <FormField
+                                                                control={form.control}
+                                                                name={`options.${index}.name`}
+                                                                render={({ field }) => (
+                                                                    <FormItem>
+                                                                        <FormControl>
+                                                                            <Input className="h-8" {...field} />
+                                                                        </FormControl>
+                                                                    </FormItem>
+                                                                )}
+                                                            />
+
+                                                            <FormField
+                                                                control={form.control}
+                                                                name={`options.${index}.price`}
+                                                                render={({ field }) => (
+                                                                    <FormItem>
+                                                                        <FormControl>
+                                                                            <Input type="number" className="h-8" {...field} placeholder="0.0 MAD" />
+                                                                        </FormControl>
+                                                                    </FormItem>
+                                                                )}
+                                                            />
+
+
+                                                            <SortableDragHandle
+                                                                variant="outline"
+                                                                size="icon"
+                                                                className="size-8 shrink-0"
+                                                            >
+                                                                <GripVertical />
+
+                                                            </SortableDragHandle>
+                                                            <Button
+                                                                disabled={form.watch().options.length <= 1}
+                                                                type="button"
+                                                                variant="outline"
+                                                                size="icon"
+                                                                className="size-8 shrink-0"
+                                                                onClick={() => remove(index)}
+                                                            >
+                                                                <TrashIcon
+                                                                    className="size-4 text-destructive"
+                                                                    aria-hidden="true"
+                                                                />
+                                                                <span className="sr-only">Remove</span>
+                                                            </Button>
+                                                        </div>
+                                                    </SortableItem>
+                                                ))}
+                                            </div>
+                                        </Sortable>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="sm"
+                                            className="w-fit space-x-1"
+                                            onClick={() => append({ name: "" })}
+                                        >
+                                            <Plus size='16' />
+                                            <span>Add option</span>
+                                        </Button>
+
+                                    </FormItem>)}
+                            >
+
+                            </FormField>
+
                             <Separator />
 
                             <Collapsible open={rulesOpen} onOpenChange={setRulesOpen}>

@@ -7,6 +7,7 @@ import SectionHeader from '@/components/navigation/section-header'
 import CreateModifierForm from '@/components/forms/create-modifer-form'
 import { useNavigationStore } from '@/state/store'
 import { useModifiersBySite } from '@/api/modifierApi'
+import ModifiersTable from '@/components/menu/modifers-table'
 
 export const Route = createFileRoute('/dashboard/menu/overview')({
   staticData: {
@@ -26,7 +27,7 @@ function RouteComponent() {
 
 
 
-  if (!sites || !menus || !activeSite) return null
+  if (!sites || !menus || !activeSite || !modifiers) return null
 
   return (
     <div className="flex flex-col space-y-4">
@@ -43,18 +44,15 @@ function RouteComponent() {
           </div>
         </TabsContent>
         <TabsContent value='modifiers'>
-          <div className='flex flex-col py-4 space-y-4'>
-            <div className='flex justify-between'>
-              <SectionHeader title='Modifiers' subtitle='Here you can manage your menu modifers for customizable menu items' />
+          <div className='flex flex-col py-4 space-y-8'>
+            <div className='flex justify-between items-center'>
+              <SectionHeader title='Modifiers' />
               <CreateModifierForm menuId={menus[0].id} site={activeSite} storeId={storeId} />
             </div>
-            <div>
-              modifers : {modifiers?.length}
-            </div>
+            <ModifiersTable menu={menus[0]} storeSite={activeSite} modifiers={modifiers} />
           </div>
         </TabsContent>
       </Tabs>
-
 
     </div>
   )
