@@ -36,6 +36,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/colla
 import { Switch } from "../ui/switch"
 import makeAnimated from 'react-select/animated';
 import { useProductsByNameQueryAndMenu } from "@/api/productApi"
+import { useToast } from "@/hooks/use-toast"
 
 interface ModifierFormProps {
     site: StoreSite
@@ -49,6 +50,22 @@ interface ModifierFormProps {
 const ModifierForm: React.FC<ModifierFormProps> = ({ site, menuId, storeId, modifier, isOpen, onOpenChanges }) => {
     const [error, setError] = useState<string>('')
 
+    const { toast } = useToast()
+
+    const onMutationSuccess = () => {
+        queryClient.invalidateQueries({ queryKey: ['modifiers', site.id] })
+        onOpenChanges(false)
+        const toastMessage = modifier == undefined ? 'Modifier has been created.' : 'Modifier has been updated.'
+        toast({ title: toastMessage, })
+    }
+
+    const onMutatuionError = () => {
+        onOpenChanges(false)
+        toast({
+            variant: 'destructive',
+            title: "Uh oh! Something went wrong.",
+        })
+    }
 
     const [rulesOpen, setRulesOpen] = useState(false)
 
@@ -96,15 +113,18 @@ const ModifierForm: React.FC<ModifierFormProps> = ({ site, menuId, storeId, modi
 
     const createModifierMutation = useMutation({
         mutationFn: modifierApi.createModifier,
-        onError: (error: any) => setError(error.message),
+        onSuccess: onMutationSuccess,
+        onError: onMutatuionError,
     })
 
     const updateMutation = useMutation({
         mutationFn: modifierApi.updateModifer,
-        onError: (error: any) => setError(error.message),
+        onSuccess: onMutationSuccess,
+        onError: onMutatuionError,
     })
 
     const mutationIsPending = updateMutation.isPending || createModifierMutation.isPending
+
 
     const onSubmit = (values: z.infer<typeof formSchema>) => {
         if (modifier) {
@@ -123,10 +143,7 @@ const ModifierForm: React.FC<ModifierFormProps> = ({ site, menuId, storeId, modi
                 productsIds: values.productsIds,
             },
                 {
-                    onSuccess: ({ data }) => {
-                        queryClient.invalidateQueries({ queryKey: ['modifiers', site.id] })
-                        onOpenChanges(false)
-                    },
+
                 },)
         } else {
             createModifierMutation.mutate(
@@ -146,10 +163,9 @@ const ModifierForm: React.FC<ModifierFormProps> = ({ site, menuId, storeId, modi
                     productsIds: values.productsIds,
                 },
                 {
-                    onSuccess: ({ data }) => {
-                        queryClient.invalidateQueries({ queryKey: ['modifiers', site.id] })
-                        onOpenChanges(false)
-                    },
+                    onSuccess: onMutationSuccess,
+                    onError: onMutatuionError,
+
                 },
             )
         }

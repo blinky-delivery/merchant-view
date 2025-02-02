@@ -16,6 +16,7 @@ import CreateProductForm from '../forms/create-product-form';
 import ProductItem from './product-item';
 import SortProductsForm from '../forms/sort-products';
 import { Collapsible, CollapsibleContent } from '../ui/collapsible';
+import MenuCategoryForm from '../forms/menu-category-form';
 
 
 interface MenuCategoryCardProps {
@@ -28,11 +29,20 @@ const MenuCategoryCard: React.FC<MenuCategoryCardProps> = ({ category, menuId, s
 
     const { data: products, isLoading: productsLoading, error: productsError } = useProductsByCategory(category.id)
     const [productFormOpen, setProductFormOpen] = useState(false)
+    const [menuCategoryFormOpen, setMenuCategoryFormOpen] = useState(false)
+    const [dropdDownOpen, setDropDownOpen] = useState(false)
+
+    const onAddCategoryHandler = () => {
+        setDropDownOpen(false)
+        setMenuCategoryFormOpen(true)
+    }
+
 
     const [expanded, setExpanded] = useState(true)
 
     return (
         <>
+            <MenuCategoryForm menuId={menuId} storeId={storeId} isOpen={menuCategoryFormOpen} onOpenChanges={setMenuCategoryFormOpen} menuCategory={category} />
             <CreateProductForm open={productFormOpen} onOpenChanged={setProductFormOpen} menuCategory={category} />
             <div className='flex flex-col space-y-2'>
                 <div className='flex justify-between'>
@@ -49,7 +59,7 @@ const MenuCategoryCard: React.FC<MenuCategoryCardProps> = ({ category, menuId, s
                             {expanded && <ChevronUp />}
                             {!expanded && <ChevronDown />}
                         </Button>
-                        <DropdownMenu >
+                        <DropdownMenu open={dropdDownOpen} onOpenChange={setDropDownOpen} >
                             <DropdownMenuTrigger asChild>
                                 <Button variant={'outline'}><Ellipsis /></Button>
                             </DropdownMenuTrigger>
@@ -69,7 +79,10 @@ const MenuCategoryCard: React.FC<MenuCategoryCardProps> = ({ category, menuId, s
                                 </DropdownMenuGroup>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuGroup>
-                                    <DropdownMenuItem>
+                                    <DropdownMenuItem onClick={(e) => {
+                                        e.preventDefault()
+                                        onAddCategoryHandler()
+                                    }}>
                                         <Edit2 />
                                         <span>Edit Details</span>
                                     </DropdownMenuItem>

@@ -6,7 +6,7 @@ import { ArrowUpDown, Calendar, Check, Eye, Plus, Settings, Trash } from 'lucide
 import { Button } from '../ui/button';
 import SectionHeader from '../navigation/section-header';
 import EditMenuForm from '../forms/edit-menu-form';
-import CreateMenuCategoryForm from '../forms/create-menu-category';
+import MenuCategoryForm from '../forms/menu-category-form';
 import MenuCategoryCard from './menu-category-card';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import SortMenuCategoriesForm from '../forms/sort-menu-categories';
@@ -26,13 +26,21 @@ const MenuCard: React.FC<MenuCardProps> = ({ sites, activeSite, storeId }: MenuC
 
     const [showEditMenuForm, setShowEditMenuForm] = useState(false)
 
+    const [menuCategoryFormOpen, setMenuCategoryFormOpen] = useState(false)
+
     const { data: menu, isLoading: menuisLoading } = useSiteMenu(activeSite.id)
+
+    const onAddCategoryHandler = () => {
+        setDropDownOpen(false)
+        setMenuCategoryFormOpen(true)
+    }
 
 
     if (!menu) return null
 
     return (
         <>
+            <MenuCategoryForm menuId={menu.id} storeId={storeId} isOpen={menuCategoryFormOpen} onOpenChanges={setMenuCategoryFormOpen} />
             <EditMenuForm menu={menu} sites={sites} storeId={storeId} open={showEditMenuForm} onOpenChanged={setShowEditMenuForm} />
             <Card>
                 <CardHeader>
@@ -71,7 +79,10 @@ const MenuCard: React.FC<MenuCardProps> = ({ sites, activeSite, storeId }: MenuC
                                                         <span>Rearrange Categories</span>
                                                     </DropdownMenuItem>
                                                 </SortMenuCategoriesForm>
-                                                <DropdownMenuItem>
+                                                <DropdownMenuItem onClick={(e) => {
+                                                    e.preventDefault()
+                                                    onAddCategoryHandler()
+                                                }}>
                                                     <Plus />
                                                     <span>Add a Category</span>
                                                 </DropdownMenuItem>
@@ -94,11 +105,10 @@ const MenuCard: React.FC<MenuCardProps> = ({ sites, activeSite, storeId }: MenuC
                             <CategoryList menuId={menu.id} storeId={storeId} />
 
                         </div>
-                        <CreateMenuCategoryForm menuId={menu.id} storeId={storeId}>
-                            <Button className='mt-4 items-center text-muted-foreground font-semibold space-x-1' variant={'outline'}>
-                                <Plus size={20} />   <span>Add Category</span>
-                            </Button>
-                        </CreateMenuCategoryForm>
+                        <Button className='mt-4 items-center text-muted-foreground font-semibold space-x-1' variant={'outline'} onClick={onAddCategoryHandler}>
+                            <Plus size={20} />   <span>Add Category</span>
+                        </Button>
+
                     </div>
                 </CardContent>
 

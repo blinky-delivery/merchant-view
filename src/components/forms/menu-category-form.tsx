@@ -1,4 +1,4 @@
-import { menuApi } from "@/api/menuApi"
+import { menuApi, MenuCategory } from "@/api/menuApi"
 import { queryClient } from "@/main"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
@@ -9,23 +9,39 @@ import { z } from "zod"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
 import { Input } from "../ui/input"
-import { Button } from "../ui/button"
-import SpinnerIcon from "../ui/spinner"
 import { Textarea } from "../ui/textarea"
 import FormSubmitButtons from "./form-submit-buttons"
+import { useToast } from "@/hooks/use-toast"
 
-interface CreateMenuCategoryFormProps {
+interface MenuCategoryFormProps {
     storeId: string
     menuId: string
-    children: React.ReactNode
+    onOpenChanges: (value: boolean) => void
+    isOpen: boolean
+    menuCategory?: MenuCategory
+
 
 }
 
-const CreateMenuCategoryForm = ({ menuId, storeId, children }: CreateMenuCategoryFormProps) => {
-    const navigate = useNavigate()
-    const [error, setError] = useState<string>('')
+const MenuCategoryForm = ({ menuId, storeId, menuCategory, isOpen, onOpenChanges }: MenuCategoryFormProps) => {
 
-    const [sheetOpen, setSheetOpen] = useState(false)
+    const { toast } = useToast()
+
+    const onMutationSuccess = () => {
+        queryClient.invalidateQueries({ queryKey: ['menu_categories', menuId] })
+        onOpenChanges(false)
+        const toastMessage = menuCategory == undefined ? 'Cateogry has been created.' : 'Cateogry has been updated.'
+        toast({ title: toastMessage, })
+    }
+
+    const onMutatuionError = () => {
+        onOpenChanges(false)
+        toast({
+            variant: 'destructive',
+            title: "Uh oh! Something went wrong.",
+        })
+    }
+
 
     const formSchema = z.object({
         name: z.string().min(2, {
@@ -36,40 +52,51 @@ const CreateMenuCategoryForm = ({ menuId, storeId, children }: CreateMenuCategor
         }),
     })
 
-    const mutation = useMutation({
+    const createMutation = useMutation({
         mutationFn: menuApi.createMenuCategory,
-        onError: (error: any) => setError(error.message),
+        onSuccess: onMutationSuccess,
+        onError: onMutatuionError,
     })
+
+    const updateMutation = useMutation({
+        mutationFn: menuApi.updateMenuCategory,
+        onSuccess: onMutationSuccess,
+        onError: onMutatuionError,
+    })
+
+    const mutationIsPending = updateMutation.isPending || createMutation.isPending
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: '',
-            description: '',
+            name: menuCategory?.name,
+            description: menuCategory?.description,
         },
     })
 
     const onSubmit = (values: z.infer<typeof formSchema>) => {
-        mutation.mutate(
-            {
+        if (menuCategory != undefined) {
+            updateMutation.mutate({
+                id: menuCategory.id,
+                name: values.name,
+                description: values.description,
+            })
+
+        } else {
+            createMutation.mutate({
                 menuId: menuId,
                 name: values.name,
                 description: values.description,
-            },
-            {
-                onSuccess: () => {
-                    queryClient.invalidateQueries({ queryKey: ['menu_categories', menuId] })
-                    setSheetOpen(false)
-                }
-            }
-        )
+            })
+        }
+
+
+
     }
 
     return (
-        <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-            <SheetTrigger asChild>
-                {children}
-            </SheetTrigger>
+        <Sheet open={isOpen} onOpenChange={onOpenChanges}>
+
             <SheetContent>
                 <SheetHeader>
                     <SheetTitle>New Category</SheetTitle>
@@ -121,10 +148,10 @@ const CreateMenuCategoryForm = ({ menuId, storeId, children }: CreateMenuCategor
                                 )}
                             ></FormField>
                             <FormSubmitButtons
-                                isDisabled={mutation.isPending}
-                                isLoading={mutation.isPending}
+                                isDisabled={mutationIsPending}
+                                isLoading={mutationIsPending}
                                 showCancel={true}
-                                onCancel={() => setSheetOpen(false)}
+                                onCancel={() => onOpenChanges(false)}
                             />
                         </form>
                     </Form>
@@ -137,4 +164,4 @@ const CreateMenuCategoryForm = ({ menuId, storeId, children }: CreateMenuCategor
     )
 }
 
-export default CreateMenuCategoryForm
+export default MenuCategoryForm

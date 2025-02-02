@@ -50,6 +50,12 @@ export interface CreateMenuCategoryPayload {
     description: string | null
 }
 
+export interface UpdateMenuCateogryPayload {
+    id: string
+    name: string
+    description: string
+}
+
 export interface ResortMenuCategoriesPayload {
     menuId: string
     newOrder: string[]
@@ -90,6 +96,10 @@ export const menuApi = {
 
     createMenuCategory: async (payload: CreateMenuCategoryPayload) => {
         return axiosInstance.post<ApiResponse<MenuCategory>>('menu/categories', payload).then((resp) => resp.data)
+    },
+
+    updateMenuCategory: async (payload: UpdateMenuCateogryPayload) => {
+        return axiosInstance.put<ApiResponse<MenuCategory>>('menu/categories', payload).then((resp) => resp.data)
     },
 
     resortMenuCategories: async (payload: ResortMenuCategoriesPayload) => {
