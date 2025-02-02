@@ -2,9 +2,6 @@ import { StoreSite } from "@/api/storeApi"
 import { Input } from '@/components/ui/input'
 import { queryClient } from '@/main'
 import { useMutation } from '@tanstack/react-query'
-import {
-    useNavigate,
-} from '@tanstack/react-router'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { useEffect, useState } from 'react'
@@ -32,22 +29,22 @@ import {
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { ChevronDown, ChevronUp, GripVertical, Plus, PlusIcon, TrashIcon } from "lucide-react"
 import FormSubmitButtons from "./form-submit-buttons"
-import { modifierApi } from "@/api/modifierApi"
+import { Modifer, modifierApi } from "@/api/modifierApi"
 import { Separator } from "../ui/separator"
 import { Sortable, SortableDragHandle, SortableItem } from "../ui/sortable"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible"
 import { Switch } from "../ui/switch"
 import makeAnimated from 'react-select/animated';
-import { Product, useProductsByNameQueryAndMenu } from "@/api/productApi"
+import { useProductsByNameQueryAndMenu } from "@/api/productApi"
 
-interface CreateModifierFormProps {
+interface ModifierFormProps {
     site: StoreSite
     storeId: string
     menuId: string
+    modifier?: Modifer
 }
 
-export default function CreateModifierForm({ site, menuId, storeId }: CreateModifierFormProps) {
-    const navigate = useNavigate()
+export default function ModifierForm({ site, menuId, storeId, modifier, children }: React.PropsWithChildren<ModifierFormProps>) {
     const [error, setError] = useState<string>('')
 
     const [sheetOpen, setSheetOpen] = useState(false)
@@ -77,14 +74,16 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            required: false,
-            multipleAllowed: false,
-            productsIds: [],
-            options: [
-                {
-                    name: '',
-                }
-            ]
+            name: modifier?.name,
+            minQuantity: modifier?.minQuantity,
+            maxFreeQuantity: modifier?.maxFreeQuantity ?? undefined,
+            maxQuantity: modifier?.maxQuantity,
+            required: modifier?.required,
+            multipleAllowed: modifier?.multipleAllowed,
+            productsIds: modifier?.modifiersToProducts?.map((item) => item.product.id) ?? [],
+            options: modifier?.options.map((option) => ({ name: option.name, price: option.price })) ?? [{
+                name: ''
+            }],
         },
     })
 
@@ -98,12 +97,18 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
         onError: (error: any) => setError(error.message),
     })
 
+    const updateMutation = useMutation({
+        mutationFn: modifierApi.updateModifer,
+        onError: (error: any) => setError(error.message),
+    })
+
+    const mutationIsPending = updateMutation.isPending || createModifierMutation.isPending
+
     const onSubmit = (values: z.infer<typeof formSchema>) => {
-        createModifierMutation.mutate(
-            {
+        if (modifier) {
+            updateMutation.mutate({
+                id: modifier.id,
                 name: values.name,
-                storeSiteId: site.id,
-                menuId: menuId,
                 required: values.required,
                 multipleAllowed: values.multipleAllowed,
                 maxFreeQuantity: values.maxFreeQuantity ?? 0,
@@ -114,14 +119,33 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
                     price: opt.price ?? 0,
                 })),
                 productsIds: values.productsIds,
-            },
-            {
-                onSuccess: ({ data }) => {
-                    queryClient.invalidateQueries({ queryKey: ['menus', storeId] })
-                    setSheetOpen(false)
+            })
+        } else {
+            createModifierMutation.mutate(
+                {
+                    name: values.name,
+                    storeSiteId: site.id,
+                    menuId: menuId,
+                    required: values.required,
+                    multipleAllowed: values.multipleAllowed,
+                    maxFreeQuantity: values.maxFreeQuantity ?? 0,
+                    maxQuantity: values.maxQuantity ?? 0,
+                    minQuantity: values.minQuantity ?? 0,
+                    options: values.options.map((opt) => ({
+                        name: opt.name,
+                        price: opt.price ?? 0,
+                    })),
+                    productsIds: values.productsIds,
                 },
-            },
-        )
+                {
+                    onSuccess: ({ data }) => {
+                        queryClient.invalidateQueries({ queryKey: ['menus', storeId] })
+                        setSheetOpen(false)
+                    },
+                },
+            )
+        }
+
     }
 
     const [productNameQuery, setProductNameQuery] = useState('')
@@ -160,9 +184,7 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
     return (
         <Sheet open={sheetOpen} onOpenChange={setSheetOpen} modal={true}>
             <SheetTrigger asChild>
-                <Button className="space-x-1">
-                    <PlusIcon /> <span>New Modifier</span>
-                </Button>
+                {children}
             </SheetTrigger>
             <SheetContent className="min-w-[600px] overflow-y-auto">
                 <SheetHeader>
@@ -390,7 +412,7 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
                                                             render={({ field }) => (
                                                                 <FormItem>
                                                                     <div className="flex flex-row items-center justify-between">
-                                                                        <FormLabel>Minimum:</FormLabel>
+                                                                        <FormLabel className="text-base">Minimum:</FormLabel>
                                                                         <div className="w-32">
                                                                             <CustomSelect onValueChange={field.onChange} defaultValue={minOptionsSelects[0].label}>
                                                                                 <FormControl>
@@ -417,7 +439,7 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
                                                             render={({ field }) => (
                                                                 <FormItem>
                                                                     <div className="flex flex-row items-center justify-between">
-                                                                        <FormLabel>Maximum:</FormLabel>
+                                                                        <FormLabel className="text-base">Maximum:</FormLabel>
                                                                         <div className="w-32">
                                                                             <CustomSelect onValueChange={field.onChange} defaultValue={maxFeeOptionsSelects[0].label}>
                                                                                 <FormControl>
@@ -443,7 +465,7 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
                                                             render={({ field }) => (
                                                                 <FormItem>
                                                                     <div className="flex flex-row items-center justify-between">
-                                                                        <FormLabel>Maximum Free:</FormLabel>
+                                                                        <FormLabel className="text-base">Maximum Free:</FormLabel>
                                                                         <div className="w-32">
                                                                             <CustomSelect onValueChange={field.onChange} defaultValue={maxFeeOptionsSelects[0].label}>
                                                                                 <FormControl>
@@ -474,8 +496,8 @@ export default function CreateModifierForm({ site, menuId, storeId }: CreateModi
                             </Collapsible>
 
                             <FormSubmitButtons
-                                isDisabled={createModifierMutation.isPending}
-                                isLoading={createModifierMutation.isPending}
+                                isDisabled={mutationIsPending}
+                                isLoading={mutationIsPending}
                                 showCancel={true}
                                 onCancel={() => setSheetOpen(false)}
                             />

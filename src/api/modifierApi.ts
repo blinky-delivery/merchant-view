@@ -45,6 +45,21 @@ export interface CreateModifierPayload {
     }[],
 }
 
+export interface UpdateModifierPayload {
+    id: string
+    name: string
+    required: boolean
+    multipleAllowed: boolean
+    minQuantity: number
+    maxQuantity: number
+    maxFreeQuantity: number
+    options: {
+        name: string
+        price: number
+    }[],
+    productsIds: string[]
+}
+
 export const modifierApi = {
     createModifier: async (payload: CreateModifierPayload) => {
         return axiosInstance.post<ApiResponse<Modifer>>('modifier', payload).then((resp) => resp.data)
@@ -55,6 +70,9 @@ export const modifierApi = {
                 site_id: siteId
             }
         }).then((resp) => resp.data)
+    },
+    updateModifer: async (payload: UpdateModifierPayload) => {
+        return axiosInstance.put<ApiResponse<Modifer>>('modifier', payload).then((resp) => resp.data)
     }
 }
 

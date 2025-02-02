@@ -3,10 +3,12 @@ import MenuCard from '@/components/menu/menu-card'
 import { StoreSite, useStoreSites } from '@/api/storeApi'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import SectionHeader from '@/components/navigation/section-header'
-import CreateModifierForm from '@/components/forms/create-modifer-form'
+import ModifierForm from '@/components/forms/modifier-form'
 import { useNavigationStore } from '@/state/store'
-import ModifiersTable from '@/components/menu/modifers-table'
+import ModifiersTable from '@/components/menu/modifiers-table'
 import { useSiteMenu } from '@/api/menuApi'
+import { Button } from '@/components/ui/button'
+import { PlusIcon } from 'lucide-react'
 
 export const Route = createFileRoute('/dashboard/menu/overview')({
   staticData: {
@@ -62,9 +64,13 @@ const MneuSiteWrapper: React.FC<MneuSiteWrapperProps> = ({ activeSite, storeId, 
           <div className='flex flex-col py-4 space-y-8'>
             <div className='flex justify-between items-center'>
               <SectionHeader title='Modifiers' />
-              <CreateModifierForm menuId={menu.id} site={activeSite} storeId={storeId} />
+              <ModifierForm menuId={menu.id} site={activeSite} storeId={storeId} >
+                <Button className="space-x-1">
+                  <PlusIcon /> <span>New Modifier</span>
+                </Button>
+              </ModifierForm>
             </div>
-            <ModifiersTable storeSite={activeSite} />
+            <ModifiersTable menu={menu} storeSite={activeSite} />
           </div>
         </TabsContent>
       </Tabs>
