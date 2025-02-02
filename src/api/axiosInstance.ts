@@ -11,7 +11,7 @@ interface ApiResponse<T> {
 const axiosInstance: AxiosInstance = axios.create({
     baseURL: 'http://localhost:3001',
     withCredentials: true,
-    timeout: 5000,
+    timeout: 15000,
 });
 
 // Response Interceptor

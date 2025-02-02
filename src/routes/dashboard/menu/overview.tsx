@@ -9,6 +9,7 @@ import ModifiersTable from '@/components/menu/modifiers-table'
 import { useSiteMenu } from '@/api/menuApi'
 import { Button } from '@/components/ui/button'
 import { PlusIcon } from 'lucide-react'
+import { useState } from 'react'
 
 export const Route = createFileRoute('/dashboard/menu/overview')({
   staticData: {
@@ -45,36 +46,43 @@ type MneuSiteWrapperProps = {
 
 const MneuSiteWrapper: React.FC<MneuSiteWrapperProps> = ({ activeSite, storeId, sites }) => {
   const { data: menu, isLoading: menuisLoading } = useSiteMenu(activeSite.id)
+  const [createModiferFormOpen, setCreateModiferFormOpen] = useState(false)
+
+  const onCreateClick = () => {
+    setCreateModiferFormOpen(true)
+  }
 
   if (!menu) return null
 
   return (
-    <div className="flex flex-col space-y-4">
-      <Tabs defaultValue='overview' className='w-full'>
-        <TabsList className="grid w-full grid-cols-2 mb-4 h-14 text-lg">
-          <TabsTrigger value="overview" className='h-12 text-lg'>Overview </TabsTrigger>
-          <TabsTrigger value="modifiers" className='h-12 text-lg'>Modifiers</TabsTrigger>
-        </TabsList>
-        <TabsContent value='overview'>
-          <div className="flex flex-col space-y-8">
-            <MenuCard sites={sites} storeId={storeId} activeSite={activeSite} />
-          </div>
-        </TabsContent>
-        <TabsContent value='modifiers'>
-          <div className='flex flex-col py-4 space-y-8'>
-            <div className='flex justify-between items-center'>
-              <SectionHeader title='Modifiers' />
-              <ModifierForm menuId={menu.id} site={activeSite} storeId={storeId} >
-                <Button className="space-x-1">
+    <>
+      <ModifierForm menuId={menu.id} site={activeSite} storeId={storeId} isOpen={createModiferFormOpen} onOpenChanges={setCreateModiferFormOpen} />
+
+      <div className="flex flex-col space-y-4">
+        <Tabs defaultValue='overview' className='w-full'>
+          <TabsList className="grid w-full grid-cols-2 mb-4 h-14 text-lg">
+            <TabsTrigger value="overview" className='h-12 text-lg'>Overview </TabsTrigger>
+            <TabsTrigger value="modifiers" className='h-12 text-lg'>Modifiers</TabsTrigger>
+          </TabsList>
+          <TabsContent value='overview'>
+            <div className="flex flex-col space-y-8">
+              <MenuCard sites={sites} storeId={storeId} activeSite={activeSite} />
+            </div>
+          </TabsContent>
+          <TabsContent value='modifiers'>
+            <div className='flex flex-col py-4 space-y-8'>
+              <div className='flex justify-between items-center'>
+                <SectionHeader title='Modifiers' />
+                <Button className="space-x-1" onClick={onCreateClick}>
                   <PlusIcon /> <span>New Modifier</span>
                 </Button>
-              </ModifierForm>
+              </div>
+              <ModifiersTable menu={menu} storeSite={activeSite} />
             </div>
-            <ModifiersTable menu={menu} storeSite={activeSite} />
-          </div>
-        </TabsContent>
-      </Tabs>
+          </TabsContent>
+        </Tabs>
 
-    </div>
+      </div>
+    </>
   );
 };

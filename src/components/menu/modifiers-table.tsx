@@ -1,7 +1,7 @@
 import { Menu, useSiteMenu } from '@/api/menuApi';
 import { Modifer, ModifierOption, useModifiersBySite } from '@/api/modifierApi';
 import { StoreSite } from '@/api/storeApi';
-import React from 'react';
+import React, { useState } from 'react';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 import { Product } from '@/api/productApi';
 import { Card, CardContent } from '../ui/card';
@@ -83,13 +83,21 @@ const ModifierRow: React.FC<ModifierRowProps> = ({ modifier, menuId, site, store
         return productNames.join(', ');
     };
 
+    const [createModiferFormOpen, setCreateModiferFormOpen] = useState(false)
+    const [dropDownOpen, setDropDownOpen] = useState(false)
+    const onEditClick = () => {
+        setDropDownOpen(false)
+        setCreateModiferFormOpen(true)
+    }
+
+
     return (
         <TableRow key={modifier.id} className='h-20'>
             <TableCell className='font-semibold text-base'>{modifier.name}</TableCell>
             <TableCell className='text-base'>{optionsCell(modifier.options)}</TableCell>
             <TableCell className='text-base'>{productsCell(modifier?.modifiersToProducts?.map((relation) => relation.product) ?? [])}</TableCell>
             <TableCell className='text-right'>
-                <DropdownMenu>
+                <DropdownMenu open={dropDownOpen} onOpenChange={setDropDownOpen} modal={false}>
                     <DropdownMenuTrigger asChild>
                         <Button variant='outline'><Ellipsis /></Button>
                     </DropdownMenuTrigger>
@@ -108,7 +116,10 @@ const ModifierRow: React.FC<ModifierRowProps> = ({ modifier, menuId, site, store
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem onClick={(e) => {
+                                e.preventDefault()
+                                onEditClick()
+                            }}>
                                 <Edit2 />
                                 <span>Edit Details</span>
                             </DropdownMenuItem>
@@ -120,6 +131,8 @@ const ModifierRow: React.FC<ModifierRowProps> = ({ modifier, menuId, site, store
                     </DropdownMenuContent>
                 </DropdownMenu>
             </TableCell>
+            <ModifierForm menuId={menuId} site={site} storeId={storeId} isOpen={createModiferFormOpen} onOpenChanges={setCreateModiferFormOpen} modifier={modifier} />
+
         </TableRow >
     );
 };

@@ -42,12 +42,14 @@ interface ModifierFormProps {
     storeId: string
     menuId: string
     modifier?: Modifer
+    isOpen: boolean,
+    onOpenChanges: (value: boolean) => void,
 }
 
-export default function ModifierForm({ site, menuId, storeId, modifier, children }: React.PropsWithChildren<ModifierFormProps>) {
+const ModifierForm: React.FC<ModifierFormProps> = ({ site, menuId, storeId, modifier, isOpen, onOpenChanges }) => {
     const [error, setError] = useState<string>('')
 
-    const [sheetOpen, setSheetOpen] = useState(false)
+
     const [rulesOpen, setRulesOpen] = useState(false)
 
     const formSchema = z.object({
@@ -119,7 +121,13 @@ export default function ModifierForm({ site, menuId, storeId, modifier, children
                     price: opt.price ?? 0,
                 })),
                 productsIds: values.productsIds,
-            })
+            },
+                {
+                    onSuccess: ({ data }) => {
+                        queryClient.invalidateQueries({ queryKey: ['modifiers', site.id] })
+                        onOpenChanges(false)
+                    },
+                },)
         } else {
             createModifierMutation.mutate(
                 {
@@ -139,8 +147,8 @@ export default function ModifierForm({ site, menuId, storeId, modifier, children
                 },
                 {
                     onSuccess: ({ data }) => {
-                        queryClient.invalidateQueries({ queryKey: ['menus', storeId] })
-                        setSheetOpen(false)
+                        queryClient.invalidateQueries({ queryKey: ['modifiers', site.id] })
+                        onOpenChanges(false)
                     },
                 },
             )
@@ -182,13 +190,11 @@ export default function ModifierForm({ site, menuId, storeId, modifier, children
 
 
     return (
-        <Sheet open={sheetOpen} onOpenChange={setSheetOpen} modal={true}>
-            <SheetTrigger asChild>
-                {children}
-            </SheetTrigger>
+        <Sheet open={isOpen} onOpenChange={onOpenChanges} >
+
             <SheetContent className="min-w-[600px] overflow-y-auto">
                 <SheetHeader>
-                    <SheetTitle>New Modifier</SheetTitle>
+                    <SheetTitle>{modifier == undefined ? 'New Modifier' : 'Edit Modifier'}</SheetTitle>
                     <SheetDescription>
                         You can edit the availability of this modifier after saving.
                     </SheetDescription>
@@ -228,6 +234,7 @@ export default function ModifierForm({ site, menuId, storeId, modifier, children
                                     closeMenuOnSelect={false}
                                     isMulti={true}
                                     hideSelectedOptions={true}
+                                    defaultValue={modifier?.modifiersToProducts?.map((relation) => ({ label: relation.product.name, value: relation.product.id }))}
                                     components={animatedComponents}
                                     onChange={(value) => {
                                         const newSelectedProducts = value as { label: string, value: string }[]
@@ -499,7 +506,7 @@ export default function ModifierForm({ site, menuId, storeId, modifier, children
                                 isDisabled={mutationIsPending}
                                 isLoading={mutationIsPending}
                                 showCancel={true}
-                                onCancel={() => setSheetOpen(false)}
+                                onCancel={() => onOpenChanges(false)}
                             />
                         </form>
                     </Form>
@@ -508,3 +515,5 @@ export default function ModifierForm({ site, menuId, storeId, modifier, children
         </Sheet>
     )
 }
+
+export default ModifierForm
