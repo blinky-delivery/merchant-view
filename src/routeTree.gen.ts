@@ -20,6 +20,7 @@ import { Route as DashboardStoreImport } from './routes/dashboard/store'
 import { Route as DashboardApplyImport } from './routes/dashboard/apply'
 import { Route as AuthSignupImport } from './routes/_auth/signup'
 import { Route as AuthLoginImport } from './routes/_auth/login'
+import { Route as DashboardAvailabilityIndexImport } from './routes/dashboard/availability/index'
 import { Route as DashboardSettingsStoreImport } from './routes/dashboard/settings/store'
 import { Route as DashboardMenuOverviewImport } from './routes/dashboard/menu/overview'
 import { Route as DashboardSettingsSiteIdImport } from './routes/dashboard/settings/site/$id'
@@ -76,6 +77,14 @@ const AuthLoginRoute = AuthLoginImport.update({
   path: '/login',
   getParentRoute: () => AuthRoute,
 } as any)
+
+const DashboardAvailabilityIndexRoute = DashboardAvailabilityIndexImport.update(
+  {
+    id: '/availability/',
+    path: '/availability/',
+    getParentRoute: () => DashboardRoute,
+  } as any,
+)
 
 const DashboardSettingsStoreRoute = DashboardSettingsStoreImport.update({
   id: '/settings/store',
@@ -169,6 +178,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardSettingsStoreImport
       parentRoute: typeof DashboardImport
     }
+    '/dashboard/availability/': {
+      id: '/dashboard/availability/'
+      path: '/availability'
+      fullPath: '/dashboard/availability'
+      preLoaderRoute: typeof DashboardAvailabilityIndexImport
+      parentRoute: typeof DashboardImport
+    }
     '/dashboard/settings/site/$id': {
       id: '/dashboard/settings/site/$id'
       path: '/settings/site/$id'
@@ -199,6 +215,7 @@ interface DashboardRouteChildren {
   DashboardUsersRoute: typeof DashboardUsersRoute
   DashboardMenuOverviewRoute: typeof DashboardMenuOverviewRoute
   DashboardSettingsStoreRoute: typeof DashboardSettingsStoreRoute
+  DashboardAvailabilityIndexRoute: typeof DashboardAvailabilityIndexRoute
   DashboardSettingsSiteIdRoute: typeof DashboardSettingsSiteIdRoute
 }
 
@@ -208,6 +225,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardUsersRoute: DashboardUsersRoute,
   DashboardMenuOverviewRoute: DashboardMenuOverviewRoute,
   DashboardSettingsStoreRoute: DashboardSettingsStoreRoute,
+  DashboardAvailabilityIndexRoute: DashboardAvailabilityIndexRoute,
   DashboardSettingsSiteIdRoute: DashboardSettingsSiteIdRoute,
 }
 
@@ -226,6 +244,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/users': typeof DashboardUsersRoute
   '/dashboard/menu/overview': typeof DashboardMenuOverviewRoute
   '/dashboard/settings/store': typeof DashboardSettingsStoreRoute
+  '/dashboard/availability': typeof DashboardAvailabilityIndexRoute
   '/dashboard/settings/site/$id': typeof DashboardSettingsSiteIdRoute
 }
 
@@ -240,6 +259,7 @@ export interface FileRoutesByTo {
   '/dashboard/users': typeof DashboardUsersRoute
   '/dashboard/menu/overview': typeof DashboardMenuOverviewRoute
   '/dashboard/settings/store': typeof DashboardSettingsStoreRoute
+  '/dashboard/availability': typeof DashboardAvailabilityIndexRoute
   '/dashboard/settings/site/$id': typeof DashboardSettingsSiteIdRoute
 }
 
@@ -255,6 +275,7 @@ export interface FileRoutesById {
   '/dashboard/users': typeof DashboardUsersRoute
   '/dashboard/menu/overview': typeof DashboardMenuOverviewRoute
   '/dashboard/settings/store': typeof DashboardSettingsStoreRoute
+  '/dashboard/availability/': typeof DashboardAvailabilityIndexRoute
   '/dashboard/settings/site/$id': typeof DashboardSettingsSiteIdRoute
 }
 
@@ -271,6 +292,7 @@ export interface FileRouteTypes {
     | '/dashboard/users'
     | '/dashboard/menu/overview'
     | '/dashboard/settings/store'
+    | '/dashboard/availability'
     | '/dashboard/settings/site/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -284,6 +306,7 @@ export interface FileRouteTypes {
     | '/dashboard/users'
     | '/dashboard/menu/overview'
     | '/dashboard/settings/store'
+    | '/dashboard/availability'
     | '/dashboard/settings/site/$id'
   id:
     | '__root__'
@@ -297,6 +320,7 @@ export interface FileRouteTypes {
     | '/dashboard/users'
     | '/dashboard/menu/overview'
     | '/dashboard/settings/store'
+    | '/dashboard/availability/'
     | '/dashboard/settings/site/$id'
   fileRoutesById: FileRoutesById
 }
@@ -346,6 +370,7 @@ export const routeTree = rootRoute
         "/dashboard/users",
         "/dashboard/menu/overview",
         "/dashboard/settings/store",
+        "/dashboard/availability/",
         "/dashboard/settings/site/$id"
       ]
     },
@@ -375,6 +400,10 @@ export const routeTree = rootRoute
     },
     "/dashboard/settings/store": {
       "filePath": "dashboard/settings/store.tsx",
+      "parent": "/dashboard"
+    },
+    "/dashboard/availability/": {
+      "filePath": "dashboard/availability/index.tsx",
       "parent": "/dashboard"
     },
     "/dashboard/settings/site/$id": {

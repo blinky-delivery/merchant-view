@@ -1,6 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance, { ApiResponse } from "./axiosInstance";
 
+export enum SiteStatus {
+    OPEN = "open",
+    PAUSED = "paused",
+    CLOSED = "closed",
+    INACTIVE = "inactive",
+}
+
+
 export interface Store {
     id: string;
     name: string;
@@ -30,6 +38,15 @@ export interface StoreSite {
     phone: string;
 }
 
+export interface StoreAvailability {
+    id: string
+    storeSiteId: string
+    dayOfWeek: number
+    timeRangeIndex: number
+    openTime: string
+    closTime: string
+}
+
 export const storeApi = {
     getUserStore: async (storeId: string) => {
         return axiosInstance.get<ApiResponse<Store>>(`/stores/user-store/`, { params: { store_id: storeId } }).then(response => response.data)
@@ -39,7 +56,16 @@ export const storeApi = {
     },
     getSite: async (siteId: string) => {
         return axiosInstance.get<ApiResponse<StoreSite>>(`/stores/user-store/sites/${siteId}`).then(response => response.data)
+    },
+    getSiteAvailability: async (siteId: string) => {
+        return axiosInstance.get<ApiResponse<StoreAvailability[]>>('availability/site', {
+            params: {
+                site_id: siteId,
+            }
+        }).then((resp) => resp.data)
     }
+
+
 }
 
 export const useMerchantStore = (storeId: string) => {

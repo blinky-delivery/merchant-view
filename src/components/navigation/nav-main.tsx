@@ -1,4 +1,4 @@
-import { BookOpenText, ChevronRight, LayoutDashboard, MapPin, Settings, Settings2, Store } from "lucide-react"
+import { BookOpenText, Calendar, ChevronRight, LayoutDashboard, MapPin, Settings, Settings2, Store } from "lucide-react"
 import {
     SidebarGroup,
     SidebarMenuButton,
@@ -25,12 +25,6 @@ export function NavMain({
                     <span>Home</span>
                 </SidebarMenuButton>
             </Link>
-            <Link to='/dashboard/store'>
-                <SidebarMenuButton className="font-semibold" tooltip={'Store'}>
-                    <Store />
-                    <span>Store</span>
-                </SidebarMenuButton>
-            </Link>
 
             <Link to='/dashboard/menu/overview'>
                 <SidebarMenuButton className="font-semibold" tooltip={'Menus'}>
@@ -38,7 +32,12 @@ export function NavMain({
                     <span>Menu Manager</span>
                 </SidebarMenuButton>
             </Link>
-
+            <Link to='/dashboard/availability'>
+                <SidebarMenuButton className="font-semibold" tooltip={'Store'}>
+                    <Calendar />
+                    <span>Store Availability</span>
+                </SidebarMenuButton>
+            </Link>
 
             <Collapsible
             >
