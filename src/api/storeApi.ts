@@ -98,3 +98,13 @@ export const useSite = (siteId: string) => {
         }
     })
 }
+
+export const useSiteAvailability = (siteId: string) => {
+    return useQuery<StoreAvailability[]>({
+        queryKey: ['availability', siteId],
+        queryFn: async () => {
+            const response = await storeApi.getSiteAvailability(siteId)
+            return response.data
+        }
+    })
+}

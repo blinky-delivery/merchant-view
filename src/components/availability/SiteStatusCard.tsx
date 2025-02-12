@@ -1,6 +1,5 @@
 import React from "react";
-import { PauseCircle, XCircle, Slash, Circle, CircleSlash2 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PauseCircle, Slash, CircleSlash2 } from "lucide-react";
 import { SiteStatus } from "@/api/storeApi";
 import { IconRadixIconsDotFilled } from "../icons/dot";
 

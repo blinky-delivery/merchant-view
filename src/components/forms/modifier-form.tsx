@@ -125,7 +125,6 @@ const ModifierForm: React.FC<ModifierFormProps> = ({ site, menuId, storeId, modi
 
     const mutationIsPending = updateMutation.isPending || createModifierMutation.isPending
 
-
     const onSubmit = (values: z.infer<typeof formSchema>) => {
         if (modifier) {
             updateMutation.mutate({
