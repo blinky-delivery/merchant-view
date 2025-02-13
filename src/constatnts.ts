@@ -1,4 +1,4 @@
-export const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+export const Days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
 export const TIME_MAPPING: Record<string, string> = {
     "12 AM": "00:00:00",

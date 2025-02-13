@@ -28,17 +28,7 @@ function RouteComponent() {
         <SiteStatusCard status={SiteStatus.INACTIVE} />
 
         <div className='flex flex-col space-y-4 max-w-lg'>
-            <div className='flex flex-row justify-between'>
-                <div className='space-y-2'>
-                    <h2 className='text-2xl font-semibold'>
-                        Regular Menu Hours
-                    </h2>
-                    <h4 className='text-muted-foreground'>
-                        These are the hours your store is available on Blinky
-                    </h4>
-                </div>
-                <Button>Edit</Button>
-            </div>
+
             <SiteHours site={storeSite} />
         </div>
     </div>
