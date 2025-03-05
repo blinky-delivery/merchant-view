@@ -14,10 +14,10 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as DashboardImport } from './routes/dashboard'
+import { Route as ApplyImport } from './routes/apply'
 import { Route as AuthImport } from './routes/_auth'
 import { Route as DashboardUsersImport } from './routes/dashboard/users'
-import { Route as DashboardStoreImport } from './routes/dashboard/store'
-import { Route as DashboardApplyImport } from './routes/dashboard/apply'
+import { Route as DashboardStoreImport } from './routes/apply'
 import { Route as AuthSignupImport } from './routes/_auth/signup'
 import { Route as AuthLoginImport } from './routes/_auth/login'
 import { Route as DashboardAvailabilityIndexImport } from './routes/dashboard/availability/index'
@@ -34,6 +34,12 @@ const IndexLazyImport = createFileRoute('/')()
 const DashboardRoute = DashboardImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ApplyRoute = ApplyImport.update({
+  id: '/apply',
+  path: '/apply',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -57,12 +63,6 @@ const DashboardUsersRoute = DashboardUsersImport.update({
 const DashboardStoreRoute = DashboardStoreImport.update({
   id: '/store',
   path: '/store',
-  getParentRoute: () => DashboardRoute,
-} as any)
-
-const DashboardApplyRoute = DashboardApplyImport.update({
-  id: '/apply',
-  path: '/apply',
   getParentRoute: () => DashboardRoute,
 } as any)
 
@@ -122,6 +122,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
     }
+    '/apply': {
+      id: '/apply'
+      path: '/apply'
+      fullPath: '/apply'
+      preLoaderRoute: typeof ApplyImport
+      parentRoute: typeof rootRoute
+    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
@@ -142,13 +149,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/signup'
       preLoaderRoute: typeof AuthSignupImport
       parentRoute: typeof AuthImport
-    }
-    '/dashboard/apply': {
-      id: '/dashboard/apply'
-      path: '/apply'
-      fullPath: '/dashboard/apply'
-      preLoaderRoute: typeof DashboardApplyImport
-      parentRoute: typeof DashboardImport
     }
     '/dashboard/store': {
       id: '/dashboard/store'
@@ -210,7 +210,6 @@ const AuthRouteChildren: AuthRouteChildren = {
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 interface DashboardRouteChildren {
-  DashboardApplyRoute: typeof DashboardApplyRoute
   DashboardStoreRoute: typeof DashboardStoreRoute
   DashboardUsersRoute: typeof DashboardUsersRoute
   DashboardMenuOverviewRoute: typeof DashboardMenuOverviewRoute
@@ -220,7 +219,6 @@ interface DashboardRouteChildren {
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
-  DashboardApplyRoute: DashboardApplyRoute,
   DashboardStoreRoute: DashboardStoreRoute,
   DashboardUsersRoute: DashboardUsersRoute,
   DashboardMenuOverviewRoute: DashboardMenuOverviewRoute,
@@ -236,10 +234,10 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
   '': typeof AuthRouteWithChildren
+  '/apply': typeof ApplyRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
-  '/dashboard/apply': typeof DashboardApplyRoute
   '/dashboard/store': typeof DashboardStoreRoute
   '/dashboard/users': typeof DashboardUsersRoute
   '/dashboard/menu/overview': typeof DashboardMenuOverviewRoute
@@ -251,10 +249,10 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
   '': typeof AuthRouteWithChildren
+  '/apply': typeof ApplyRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
-  '/dashboard/apply': typeof DashboardApplyRoute
   '/dashboard/store': typeof DashboardStoreRoute
   '/dashboard/users': typeof DashboardUsersRoute
   '/dashboard/menu/overview': typeof DashboardMenuOverviewRoute
@@ -267,10 +265,10 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexLazyRoute
   '/_auth': typeof AuthRouteWithChildren
+  '/apply': typeof ApplyRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/signup': typeof AuthSignupRoute
-  '/dashboard/apply': typeof DashboardApplyRoute
   '/dashboard/store': typeof DashboardStoreRoute
   '/dashboard/users': typeof DashboardUsersRoute
   '/dashboard/menu/overview': typeof DashboardMenuOverviewRoute
@@ -282,58 +280,60 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
-    | ''
-    | '/dashboard'
-    | '/login'
-    | '/signup'
-    | '/dashboard/apply'
-    | '/dashboard/store'
-    | '/dashboard/users'
-    | '/dashboard/menu/overview'
-    | '/dashboard/settings/store'
-    | '/dashboard/availability'
-    | '/dashboard/settings/site/$id'
+  | '/'
+  | ''
+  | '/apply'
+  | '/dashboard'
+  | '/login'
+  | '/signup'
+  | '/dashboard/store'
+  | '/dashboard/users'
+  | '/dashboard/menu/overview'
+  | '/dashboard/settings/store'
+  | '/dashboard/availability'
+  | '/dashboard/settings/site/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
-    | ''
-    | '/dashboard'
-    | '/login'
-    | '/signup'
-    | '/dashboard/apply'
-    | '/dashboard/store'
-    | '/dashboard/users'
-    | '/dashboard/menu/overview'
-    | '/dashboard/settings/store'
-    | '/dashboard/availability'
-    | '/dashboard/settings/site/$id'
+  | '/'
+  | ''
+  | '/apply'
+  | '/dashboard'
+  | '/login'
+  | '/signup'
+  | '/dashboard/store'
+  | '/dashboard/users'
+  | '/dashboard/menu/overview'
+  | '/dashboard/settings/store'
+  | '/dashboard/availability'
+  | '/dashboard/settings/site/$id'
   id:
-    | '__root__'
-    | '/'
-    | '/_auth'
-    | '/dashboard'
-    | '/_auth/login'
-    | '/_auth/signup'
-    | '/dashboard/apply'
-    | '/dashboard/store'
-    | '/dashboard/users'
-    | '/dashboard/menu/overview'
-    | '/dashboard/settings/store'
-    | '/dashboard/availability/'
-    | '/dashboard/settings/site/$id'
+  | '__root__'
+  | '/'
+  | '/_auth'
+  | '/apply'
+  | '/dashboard'
+  | '/_auth/login'
+  | '/_auth/signup'
+  | '/dashboard/store'
+  | '/dashboard/users'
+  | '/dashboard/menu/overview'
+  | '/dashboard/settings/store'
+  | '/dashboard/availability/'
+  | '/dashboard/settings/site/$id'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
   AuthRoute: typeof AuthRouteWithChildren
+  ApplyRoute: typeof ApplyRoute
   DashboardRoute: typeof DashboardRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
   AuthRoute: AuthRouteWithChildren,
+  ApplyRoute: ApplyRoute,
   DashboardRoute: DashboardRouteWithChildren,
 }
 
@@ -349,6 +349,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/_auth",
+        "/apply",
         "/dashboard"
       ]
     },
@@ -362,10 +363,12 @@ export const routeTree = rootRoute
         "/_auth/signup"
       ]
     },
+    "/apply": {
+      "filePath": "apply.tsx"
+    },
     "/dashboard": {
       "filePath": "dashboard.tsx",
       "children": [
-        "/dashboard/apply",
         "/dashboard/store",
         "/dashboard/users",
         "/dashboard/menu/overview",
@@ -381,10 +384,6 @@ export const routeTree = rootRoute
     "/_auth/signup": {
       "filePath": "_auth/signup.tsx",
       "parent": "/_auth"
-    },
-    "/dashboard/apply": {
-      "filePath": "dashboard/apply.tsx",
-      "parent": "/dashboard"
     },
     "/dashboard/store": {
       "filePath": "dashboard/store.tsx",

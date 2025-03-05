@@ -7,8 +7,6 @@ export interface ImageDimensions {
     height: number;
 }
 
-
-
 const readFileAsDataURL = async (file: File | Blob): Promise<string | null> => {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();

@@ -1,20 +1,23 @@
-
 import { storeApplicationsApi } from '@/api/storeApplicationsApi'
 import { ApplyForm } from '@/components/forms/apply-form'
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { GalleryVerticalEnd } from 'lucide-react'
 
-
-export const Route = createFileRoute('/dashboard/apply')({
+export const Route = createFileRoute('/apply')({
   component: StoreApplication,
 })
 
 export function StoreApplication() {
+  const applicationsQuery = useQuery({
+    queryKey: ['storeApplications'],
+    queryFn: storeApplicationsApi.getUserApplications,
+  })
 
-  const applicationsQuery = useQuery({ queryKey: ['storeApplications'], queryFn: storeApplicationsApi.getUserApplications })
-
-  if (!applicationsQuery.isLoading && applicationsQuery.data?.data.length === 0) {
+  if (
+    !applicationsQuery.isLoading &&
+    applicationsQuery.data?.data.length === 0
+  ) {
     return (
       <div className="grid min-h-svh lg:grid-cols-2">
         {/* Left Section */}
@@ -50,10 +53,10 @@ export function StoreApplication() {
   } else {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <h1 className="text-2xl font-semibold">Your application is under verification</h1>
+        <h1 className="text-2xl font-semibold">
+          Your application is under verification
+        </h1>
       </div>
     )
   }
-
 }
-
